@@ -1,0 +1,34 @@
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Simulation outputs (large files — keep in project dirs, not in git)
+*.traj
+*.xyz
+*.log
+*.pdb
+!data/geometries/*.pdb
+
+# Project output directories
+inputs/
+packed/
+nvt/
+npt/
+anneal/
+analysis/
+vmd/
+
+# OS
+.DS_Store
+Thumbs.db
