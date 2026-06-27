@@ -14,11 +14,11 @@ env/
 *.swo
 
 # Simulation outputs (large files — keep in project dirs, not in git)
-*.traj
-*.xyz
-*.log
-*.pdb
-!data/geometries/*.pdb
+#*.traj
+#*.xyz
+#*.log
+#*.pdb
+#!data/geometries/*.pdb
 
 # Project output directories
 inputs/
