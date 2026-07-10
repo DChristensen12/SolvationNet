@@ -9,7 +9,7 @@ This Repository is being used for machine learning simulations to study the mole
 
 ## Electrolyte MD Toolkit
 
-The electrolyte_toolkit folder in SolvationNet contains modular Python scripts for battery electrolyte molecular dynamics simulations.
+The electrolyte_toolkit folder in SolvationNet contains modular Python scripts for battery electrolyte molecular dynamics simulations. In particular, this is the work directly relating to the research poster shown above (adaptation of the `SIB.ipynb` and uses data from `data/geometries`).
 
 It takes geometry-optimized PDB files from Avogadro (you can make the files elsewhere, it only has to be in a .pdb format when used here), packs them into a simulation
 cell, runs equilibration with an ML potential, checks convergence, and exports
