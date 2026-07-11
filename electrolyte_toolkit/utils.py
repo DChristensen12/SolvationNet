@@ -1,31 +1,17 @@
-""" utils.py is the shared utilities for the electrolyte MD toolkit.
-
-It contains constants, atomic data, PDB parsing,
-calculator setup, and project directory layout.
-Every other script imports from here.
-"""
+"""Shared helpers for the electrolyte MD toolkit. Everything else imports from here."""
 
 import os
 
-# --------------------------------------------------------------------------- #
-#  Physical constants
-# --------------------------------------------------------------------------- #
 AVOGADRO = 6.02214076e23
-AMU_TO_GRAMS = 1.66053906660e-24  # 1 amu in grams
-ATM_TO_GPA = 1.01325e-4           # 1 atm in GPa
-ATM_TO_EV_A3 = 1.01325e-4 / 160.2176634  # 1 atm in eV/Å³
+AMU_TO_GRAMS = 1.66053906660e-24  # amu to grams
+ATM_TO_GPA = 1.01325e-4           # atm to GPa
+ATM_TO_EV_A3 = 1.01325e-4 / 160.2176634  # atm to eV/Å³
 
-# --------------------------------------------------------------------------- #
-#  Simulation defaults
-# --------------------------------------------------------------------------- #
 DEFAULT_MODEL = "orb_v3_conservative_omol"
-DEFAULT_TIMESTEP_FS = 1.0   # femtoseconds
+DEFAULT_TIMESTEP_FS = 1.0
 DEFAULT_TRAJ_INTERVAL = 100
 DEFAULT_PROP_INTERVAL = 10
 
-# --------------------------------------------------------------------------- #
-#  Atomic masses (amu)
-# --------------------------------------------------------------------------- #
 ATOMIC_MASSES = {
     "H": 1.008, "He": 4.003, "Li": 6.941, "Be": 9.012, "B": 10.81,
     "C": 12.011, "N": 14.007, "O": 15.999, "F": 18.998, "Ne": 20.180,
@@ -37,33 +23,30 @@ ATOMIC_MASSES = {
 }
 
 
-# --------------------------------------------------------------------------- #
-#  Concentration / mass helpers
-# --------------------------------------------------------------------------- #
-
 def concentration_to_count(conc_mol_per_L: float, box_size_angstrom: float) -> int:
-    """Convert molar concentration + cubic box edge length to molecule count.
+    """Turns a target molarity into a molecule count for a cubic box.
 
-    N = c * L^3 * 6.022e-4  (L in angstroms, c in mol/L)
+    N = c * L^3 * 6.022e-4, with L in angstroms and c in mol/L.
     """
     n = conc_mol_per_L * (box_size_angstrom ** 3) * 6.02214076e-4
     return max(1, round(n))
 
 
 def total_mass_amu(elements: list[str]) -> float:
+    """Adds up atomic masses for a list of element symbols. Unknown elements fall back to carbon's mass, which is just a placeholder, not a real guess."""
     return sum(ATOMIC_MASSES.get(e, 12.0) for e in elements)
 
 
 def total_mass_grams(elements: list[str]) -> float:
+    """Same as total_mass_amu but in grams, since that's what the density math wants."""
     return total_mass_amu(elements) * AMU_TO_GRAMS
 
 
-# --------------------------------------------------------------------------- #
-#  PDB helpers
-# --------------------------------------------------------------------------- #
-
 def parse_pdb_elements(pdb_path: str) -> list[str]:
-    """Extract element symbols from ATOM/HETATM records in a PDB file."""
+    """Pulls element symbols out of a PDB's ATOM/HETATM lines.
+
+    Tries the proper element column first, and falls back to guessing from the atom name if that column is missing or blank.
+    """
     elements = []
     with open(pdb_path) as f:
         for line in f:
@@ -90,7 +73,10 @@ def parse_pdb_elements(pdb_path: str) -> list[str]:
 
 
 def add_cryst1_to_pdb(pdb_path: str, box_size: float):
-    """Prepend a CRYST1 record to a PDB file for periodic boundary conditions."""
+    """Sticks a CRYST1 record on a PDB so downstream tools know it's periodic.
+
+    Overwrites an existing CRYST1 line if there's already one there.
+    """
     cryst1 = (
         f"CRYST1{box_size:9.3f}{box_size:9.3f}{box_size:9.3f}"
         f"  90.00  90.00  90.00 P 1           1\n"
@@ -108,13 +94,9 @@ def add_cryst1_to_pdb(pdb_path: str, box_size: float):
 
 
 def parse_molecule_spec(spec_str: str, box_size: float) -> tuple[str, str, int]:
-    """Parse a molecule specification string 'name:path:amount'.
+    """Splits a 'name:path:amount' spec into its pieces.
 
-    amount can be:
-      - An integer (explicit count)
-      - A float followed by 'M' (molar concentration)
-
-    Returns (name, path, count).
+    Amount is either a plain integer count or a number ending in 'M', which gets converted to a count based on the box size.
     """
     parts = spec_str.split(":")
     if len(parts) != 3:
@@ -132,19 +114,10 @@ def parse_molecule_spec(spec_str: str, box_size: float) -> tuple[str, str, int]:
     return name, path, count
 
 
-# --------------------------------------------------------------------------- #
-#  Calculator factory
-# --------------------------------------------------------------------------- #
-
 def get_calculator(model: str = DEFAULT_MODEL, device: str | None = None):
-    """Create an ASE calculator for ML-potential MD.
+    """Builds the ASE calculator that actually runs the ML potential.
 
-    Supports orb-models (default) and MACE.  Edit this function or
-    pass your own calculator to run_md if you use a different potential.
-
-    Install the backend you need:
-        pip install orb-models     # OMol potential (recommended for electrolytes)
-        pip install mace-torch     # MACE foundation model
+    Handles orb-models (the default) and MACE. If you're using something else, this is the function to edit, or just build your own calculator and pass it to run_md directly.
     """
     import torch
     if device is None:
@@ -152,7 +125,7 @@ def get_calculator(model: str = DEFAULT_MODEL, device: str | None = None):
         if device == "cpu":
             print("WARNING: No CUDA GPU detected — MD will be slow on CPU.")
 
-    # --- orb-models ---
+    # orb-models branch
     if "orb" in model:
         try:
             from orb_models.forcefield import pretrained
@@ -176,7 +149,7 @@ def get_calculator(model: str = DEFAULT_MODEL, device: str | None = None):
         print(f"Calculator: orb-models / {model_name} on {device}")
         return calc
 
-    # --- MACE ---
+    # MACE branch
     if "mace" in model:
         try:
             from mace.calculators import mace_mp
@@ -196,12 +169,8 @@ def get_calculator(model: str = DEFAULT_MODEL, device: str | None = None):
     )
 
 
-# --------------------------------------------------------------------------- #
-#  Project directory layout
-# --------------------------------------------------------------------------- #
-
 class ProjectLayout:
-    """Standard directory layout for this electrolyte MD project.
+    """Keeps every script pointed at the same directory structure so we're not passing a dozen paths around everywhere.
 
         inputs/      — Avogadro PDB files
         packed/      — packed cell output
@@ -215,44 +184,56 @@ class ProjectLayout:
     SUBDIRS = ("inputs", "packed", "nvt", "npt", "anneal", "analysis", "vmd")
 
     def __init__(self, root: str):
+        """Just needs a root directory, everything else gets derived from it."""
         self.root = root
 
     @property
     def inputs(self) -> str:
+        """Where the raw PDB inputs live."""
         return os.path.join(self.root, "inputs")
 
     @property
     def packed_pdb(self) -> str:
+        """Path to the packed system PDB that packmol produces."""
         return os.path.join(self.root, "packed", "system.pdb")
 
     def equilibration_dir(self, protocol: str) -> str:
+        """Output dir for a given protocol (nvt, npt, or anneal)."""
         return os.path.join(self.root, protocol)
 
     def trajectory(self, protocol: str) -> str:
+        """Path to that protocol's trajectory.traj."""
         return os.path.join(self.root, protocol, "trajectory.traj")
 
     def md_log(self, protocol: str) -> str:
+        """Path to that protocol's md.log."""
         return os.path.join(self.root, protocol, "md.log")
 
     def final_structure(self, protocol: str) -> str:
+        """Path to that protocol's final.xyz."""
         return os.path.join(self.root, protocol, "final.xyz")
 
     @property
     def analysis(self) -> str:
+        """Where the diagnostic plots go."""
         return os.path.join(self.root, "analysis")
 
     @property
     def vmd(self) -> str:
+        """Where VMD-ready exports go."""
         return os.path.join(self.root, "vmd")
 
     def vmd_trajectory(self, fmt: str = "xyz") -> str:
+        """Path to the VMD export file, xyz by default."""
         return os.path.join(self.root, "vmd", f"trajectory.{fmt}")
 
     def ensure_dirs(self):
+        """Creates every subdir if it's not already there. Safe to call as many times as you want."""
         for d in self.SUBDIRS:
             os.makedirs(os.path.join(self.root, d), exist_ok=True)
 
     def summary(self) -> str:
+        """Printable rundown of where everything lives, handy for a quick sanity check."""
         lines = [f"Project root: {self.root}"]
         for d in self.SUBDIRS:
             lines.append(f"  {d + '/':12s} → {os.path.join(self.root, d)}")

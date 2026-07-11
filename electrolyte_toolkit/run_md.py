@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-""" run_md.py will run Molecular dynamics equilibration with an ML potential using ASE.
+"""Runs MD equilibration with an ML potential through ASE.
 
-It will supports NVT (Langevin), NPT (Nose-Hoover), and annealing (cyclic
-heating/cooling) protocols.  It also defaults to the orb-v3-conservative-omol
-potential, trained for organic molecules and battery electrolytes.
+Covers NVT (Langevin), NPT (Nose-Hoover), and annealing (cyclic heating and
+cooling). Defaults to orb-v3-conservative-omol since that one's trained on
+organic molecules and battery electrolytes specifically.
 
 Outputs:
-    trajectory.traj  — ASE trajectory (positions, cell, velocities)
-    md.log           — properties vs time (T, E_pot, E_kin, E_tot)
-    final.xyz        — last frame
+    trajectory.traj  (ASE trajectory: positions, cell, velocities)
+    md.log           (properties vs time: T, E_pot, E_kin, E_tot)
+    final.xyz        (last frame)
 
 Requirements:
     pip install ase torch orb-models    (or mace-torch)
@@ -33,7 +33,7 @@ from utils import (
 
 
 def clean_previous_outputs(output_dir: str):
-    """Removes trajectory and outputs from a previous run."""
+    """Wipes leftover trajectory/log/xyz files from a previous run so runs don't get mixed together."""
     removed = []
     for name in ("trajectory.traj", "md.log", "final.xyz"):
         path = os.path.join(output_dir, name)
@@ -46,7 +46,7 @@ def clean_previous_outputs(output_dir: str):
 
 def setup_md(atoms, integrator, temperature, timestep_fs, friction,
              pressure_atm=None):
-    """Creates an ASE dynamics object for the requested ensemble."""
+    """Builds the ASE dynamics object for whichever ensemble you asked for."""
     from ase import units
     from ase.md.langevin import Langevin
 
@@ -76,7 +76,7 @@ def setup_md(atoms, integrator, temperature, timestep_fs, friction,
 
 
 def attach_loggers(dyn, atoms, output_dir, traj_interval, prop_interval):
-    """Attaches trajectory writer and property logger to dynamics."""
+    """Hooks up the trajectory writer and the property logger to the dynamics object."""
     from ase.io.trajectory import Trajectory
     from ase.md import MDLogger
 
@@ -96,7 +96,7 @@ def attach_loggers(dyn, atoms, output_dir, traj_interval, prop_interval):
 
 
 def run_nvt(args, atoms):
-    """Runs NVT equilibration."""
+    """Runs the NVT equilibration end to end: dynamics, loggers, go."""
     dyn = setup_md(atoms, "nvt", args.temperature, args.timestep,
                    args.friction)
     traj = attach_loggers(dyn, atoms, args.output_dir,
@@ -108,7 +108,7 @@ def run_nvt(args, atoms):
 
 
 def run_npt(args, atoms):
-    """Runs NPT equilibration."""
+    """Same idea as run_nvt, but pressure's in the mix now too."""
     dyn = setup_md(atoms, "npt", args.temperature, args.timestep,
                    args.friction, pressure_atm=args.pressure)
     traj = attach_loggers(dyn, atoms, args.output_dir,
@@ -121,10 +121,9 @@ def run_npt(args, atoms):
 
 
 def run_anneal(args, atoms):
-    """Runs annealing with cyclic linear temperature ramps.
+    """Runs the annealing protocol: heat up, cool back down, repeat for however many cycles you asked for.
 
-    Each cycle: heat T_low→T_high, then cool T_high→T_low.
-    Temperature is updated every `ramp_update` steps for smooth ramping.
+    Temperature gets nudged every `ramp_update` steps so the ramp is smooth instead of jumping in big chunks.
     """
     from ase import units
     from ase.io.trajectory import Trajectory
@@ -176,6 +175,7 @@ def run_anneal(args, atoms):
 
 
 def main():
+    """CLI entry point: parses args, loads the structure, dispatches to whichever protocol you picked."""
     parser = argparse.ArgumentParser(
         description="Run MD equilibration with an ML potential (ASE).",
         formatter_class=argparse.RawDescriptionHelpFormatter,

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""analyze_trajectory.py analyzes equilibration trajectory, then plot density and temperature vs time.
+"""Plots density and temperature vs time from an equilibration run.
 
-It reads the md.log (property time series) and trajectory.traj (cell data)
-produced by run_md.py, and generates diagnostic plots.
+Reads md.log (the property time series) and trajectory.traj (cell data) from
+run_md.py and spits out diagnostic plots.
 
 Requirements:
     pip install ase numpy matplotlib
@@ -25,7 +25,7 @@ from utils import (
     DEFAULT_PROP_INTERVAL, DEFAULT_TRAJ_INTERVAL, DEFAULT_TIMESTEP_FS,
 )
 
-# Fractal design system colors ( I do like colors a lot)
+# fractal design system colors (I do like colors a lot)
 PINK_300 = "#DC9ED3"
 BLUE_300 = "#9FCEDB"
 ORANGE_300 = "#DBB397"
@@ -37,11 +37,7 @@ GRID_COLOR = "#E6E6E7"
 
 
 def parse_md_log(log_path: str) -> dict[str, np.ndarray]:
-    """Parse ASE MDLogger output into named arrays.
-
-    Returns dict with keys like 'Time[ps]', 'Etot[eV]', 'Epot[eV]',
-    'Ekin[eV]', 'T[K]'.
-    """
+    """Reads an ASE MDLogger file into a dict of arrays, keyed by column name (things like 'Time[ps]', 'Etot[eV]', 'T[K]')."""
     with open(log_path) as f:
         lines = [l for l in f if not l.startswith("#")]
 
@@ -63,7 +59,7 @@ def parse_md_log(log_path: str) -> dict[str, np.ndarray]:
 
 
 def load_density_from_traj(traj_path: str, mass_g: float) -> tuple[np.ndarray, np.ndarray]:
-    """Read cell volumes from ASE trajectory, return (frame_indices, density_g_cm3)."""
+    """Pulls cell volumes out of the trajectory and converts them to density in g/cm³, frame by frame."""
     from ase.io.trajectory import Trajectory
 
     traj = Trajectory(traj_path, "r")
@@ -73,11 +69,12 @@ def load_density_from_traj(traj_path: str, mass_g: float) -> tuple[np.ndarray, n
     traj.close()
 
     volumes = np.array(volumes)
-    densities = mass_g / (volumes * 1e-24)  # Å³ → cm³
+    densities = mass_g / (volumes * 1e-24)  # Å³ to cm³
     return np.arange(len(volumes)), densities
 
 
 def running_average(data: np.ndarray, window: int) -> np.ndarray:
+    """Simple moving average via convolution. Hands the data back untouched if the window's too big to matter."""
     if window <= 1 or len(data) < window:
         return data.copy()
     kernel = np.ones(window) / window
@@ -85,6 +82,7 @@ def running_average(data: np.ndarray, window: int) -> np.ndarray:
 
 
 def setup_matplotlib():
+    """Sets up matplotlib with our color scheme and the Agg backend so it works headless."""
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -107,6 +105,7 @@ def setup_matplotlib():
 
 
 def plot_series(plt, time, values, color, ylabel, title, window, output_path):
+    """Plots one time series (instantaneous plus running average) and saves it out."""
     fig, ax = plt.subplots()
     ax.plot(time, values, color=color, linewidth=1.0, alpha=0.5,
             label="Instantaneous")
@@ -126,6 +125,7 @@ def plot_series(plt, time, values, color, ylabel, title, window, output_path):
 
 
 def print_stats(name: str, data: np.ndarray, unit: str):
+    """Prints mean/std for the whole run and the last quarter, plus a rough linear drift if there's enough data to fit one."""
     last_quarter = data[3 * len(data) // 4:]
     print(f"\n  {name}:")
     print(f"    Overall:  mean={np.mean(data):.4f}, std={np.std(data):.4f} {unit}")
@@ -137,6 +137,7 @@ def print_stats(name: str, data: np.ndarray, unit: str):
 
 
 def main():
+    """CLI entry point: reads the log and trajectory, makes the plots."""
     parser = argparse.ArgumentParser(
         description="Plot equilibration diagnostics (temperature, density, energy vs time).",
     )
@@ -167,7 +168,7 @@ def main():
     os.makedirs(args.output_dir, exist_ok=True)
     plt = setup_matplotlib()
 
-    # ---- Property log (temperature, energy) ---- #
+    # temp and energy come straight from md.log
     print(f"Reading {args.log}...")
     log = parse_md_log(args.log)
 
@@ -190,7 +191,7 @@ def main():
                     "Potential Energy vs Time", args.window,
                     os.path.join(args.output_dir, "energy_vs_time.png"))
 
-    # ---- Trajectory (density from cell volume) ---- #
+    # density needs the trajectory, since it comes from cell volume
     if args.traj and args.pdb:
         print(f"\nReading trajectory for density: {args.traj}")
         elements = parse_pdb_elements(args.pdb)

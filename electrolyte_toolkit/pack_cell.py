@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""pack_cell.py will pack molecules into a cubic simulation cell using Packmol.
+"""Packs molecules into a cubic simulation cell with Packmol.
 
-It takes PDB files from Avogadro (or any source) and packs them into a
-periodic cubic box at specified concentrations or explicit counts.
+Feed it PDB files (from Avogadro or wherever you got them) and it packs them
+into a periodic cubic box, either at explicit counts or a target molarity.
 
-Requires the `packmol` binary on PATH.
+Needs the `packmol` binary on PATH.
 Install:  conda install -c conda-forge packmol
      or:  sudo apt install packmol
 
@@ -35,7 +35,7 @@ from utils import parse_molecule_spec, add_cryst1_to_pdb, ProjectLayout
 
 
 def write_packmol_input(molecules, box_size, output_path, tolerance, seed):
-    """Writes a Packmol .inp file and return its contents as a string."""
+    """Puts together the Packmol input as a string, ready to pipe into the packmol binary. Doesn't touch disk itself."""
     lines = [
         f"tolerance {tolerance}",
         "filetype pdb",
@@ -56,6 +56,7 @@ def write_packmol_input(molecules, box_size, output_path, tolerance, seed):
 
 
 def main():
+    """CLI entry point: parses the molecule specs, builds the box, runs packmol."""
     parser = argparse.ArgumentParser(
         description="Pack molecules into a cubic simulation cell.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
