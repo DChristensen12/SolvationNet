@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-echo "=== Electrolyte MD Toolkit — Setup ==="
+echo "=== Electrolyte MD Toolkit Setup ==="
 echo
 
 # # Python venv #
@@ -38,7 +38,7 @@ import torch
 if torch.cuda.is_available():
     print(f'GPU: {torch.cuda.get_device_name(0)} (CUDA {torch.version.cuda})')
 else:
-    print('GPU: None detected — MD will run on CPU (slow for large systems)')
+    print('GPU: None detected, MD will run on CPU (slow for large systems)')
 "
 echo
 

@@ -21,12 +21,12 @@ from utils import ProjectLayout
 
 
 def main():
-    """CLI entry point: reads the trajectory and writes it out in whichever format VMD wants."""
+    """CLI entry point: reads the trajectory and writes it out in whichever format VMD specifies."""
     parser = argparse.ArgumentParser(
         description="Convert ASE trajectory to VMD-readable XYZ or PDB.",
     )
     parser.add_argument("--project",
-                        help="Project root — auto-derives paths.")
+                        help="Project root, auto-derives paths.")
     parser.add_argument("--protocol", default="npt",
                         choices=["nvt", "npt", "anneal"],
                         help="Which equilibration to export (with --project).")

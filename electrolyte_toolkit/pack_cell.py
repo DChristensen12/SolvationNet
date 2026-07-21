@@ -62,10 +62,10 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--project",
-                        help="Project root — output defaults to <project>/packed/system.pdb.")
+                        help="Project root, output defaults to <project>/packed/system.pdb.")
     parser.add_argument("-m", "--molecule", action="append", required=True,
                         metavar="NAME:PATH:AMOUNT",
-                        help="'name:path:amount' — amount is an int or float+M (e.g. 1.0M).")
+                        help="'name:path:amount' (amount is an int or float+M, e.g. 1.0M).")
     parser.add_argument("-b", "--box-size", type=float, required=True,
                         help="Cubic box edge length in angstroms.")
     parser.add_argument("-o", "--output",

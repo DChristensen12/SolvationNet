@@ -159,8 +159,8 @@ def run_anneal(args, atoms):
             (args.t_high, args.t_low),
         ]):
             phase_name = "heating" if phase == 0 else "cooling"
-            print(f"  Cycle {cycle+1}/{args.num_cycles} — {phase_name} "
-                  f"({t_start}→{t_end} K)")
+            print(f"  Cycle {cycle+1}/{args.num_cycles}, {phase_name} "
+                  f"({t_start}->{t_end} K)")
 
             steps_done = 0
             while steps_done < steps_per_segment:
@@ -181,7 +181,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument("--project",
-                        help="Project root — auto-derives input/output paths.")
+                        help="Project root, auto-derives input/output paths.")
     parser.add_argument("-i", "--input",
                         help="Input structure (PDB/XYZ with cell info).")
     parser.add_argument("-p", "--protocol", required=True,
@@ -272,9 +272,9 @@ def main():
     write(final_path, atoms)
 
     print(f"\nDone. Results in {args.output_dir}/")
-    print(f"  trajectory.traj  — ASE trajectory")
-    print(f"  md.log           — property time series")
-    print(f"  final.xyz        — final structure")
+    print(f"  trajectory.traj  (ASE trajectory)")
+    print(f"  md.log           (property time series)")
+    print(f"  final.xyz        (final structure)")
 
 
 if __name__ == "__main__":

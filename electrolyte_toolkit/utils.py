@@ -123,7 +123,7 @@ def get_calculator(model: str = DEFAULT_MODEL, device: str | None = None):
     if device is None:
         device = "cuda" if torch.cuda.is_available() else "cpu"
         if device == "cpu":
-            print("WARNING: No CUDA GPU detected — MD will be slow on CPU.")
+            print("WARNING: No CUDA GPU detected, MD will be slow on CPU.")
 
     # orb-models branch
     if "orb" in model:
@@ -172,13 +172,13 @@ def get_calculator(model: str = DEFAULT_MODEL, device: str | None = None):
 class ProjectLayout:
     """Keeps every script pointed at the same directory structure so we're not passing a dozen paths around everywhere.
 
-        inputs/      — Avogadro PDB files
-        packed/      — packed cell output
-        nvt/         — NVT equilibration (trajectory.traj, md.log, final.xyz)
-        npt/         — NPT equilibration
-        anneal/      — annealing equilibration
-        analysis/    — equilibration diagnostic plots
-        vmd/         — VMD-ready trajectory exports
+        inputs/      Avogadro PDB files
+        packed/      packed cell output
+        nvt/         NVT equilibration (trajectory.traj, md.log, final.xyz)
+        npt/         NPT equilibration
+        anneal/      annealing equilibration
+        analysis/    equilibration diagnostic plots
+        vmd/         VMD-ready trajectory exports
     """
 
     SUBDIRS = ("inputs", "packed", "nvt", "npt", "anneal", "analysis", "vmd")

@@ -142,7 +142,7 @@ def main():
         description="Plot equilibration diagnostics (temperature, density, energy vs time).",
     )
     parser.add_argument("--project",
-                        help="Project root — auto-derives all paths.")
+                        help="Project root, auto-derives all paths.")
     parser.add_argument("--protocol", default="npt",
                         choices=["nvt", "npt", "anneal"],
                         help="Which equilibration to analyze (with --project).")
@@ -206,7 +206,7 @@ def main():
                     "Density vs Time", min(args.window, len(density) // 2),
                     os.path.join(args.output_dir, "density_vs_time.png"))
     elif args.traj and not args.pdb:
-        print("\n  Skipping density plot — provide --pdb for atom masses.")
+        print("\n  Skipping density plot, provide --pdb for atom masses.")
 
     print(f"\nPlots saved to {args.output_dir}/")
 

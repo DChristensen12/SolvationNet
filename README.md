@@ -236,15 +236,16 @@ To plug in a completely different ASE calculator, edit `get_calculator()` in
 
 For a new electrolyte system, a common strategy is:
 
-1. **Anneal first** to escape bad initial packing. Heat to 500 K and cool back
+1. Anneal first to escape bad initial packing. Heat to 500 K and cool back
    to 300 K over several cycles.
-2. **NPT equilibration** at the target temperature and 1 atm to let the density
+2. Run NPT equilibration at the target temperature and 1 atm to let the density
    converge
-3. **Check** the density and temperature plots. If they've plateaued, the system
+3. Check the density and temperature plots. If they've plateaued, the system
    is equilibrated.
 4. Use the `final.xyz` from the NPT run as input for production MD or further
    analysis
 
 # Current Status/Updates:
 
-I've adapted my code from the SIB.ipynb into more usable scripts that can speed-up/streamline the workflow process as described in the electrolyte_toolkit section (electrolyte_toolkit was made to streamline the SIB.ipynb process as outlined in the research poster). Currently, I am in the process of producing a dataset of mixtures I find to be of interest for optimizing specific properties within the batteries, based on research.
+Currently equilibrating boxes of mixtures that I found to be of interest via literature searchs. I also am going to make some
+changes with the scripts and ensure it runs more smoothly. The resulting dataset will also be uploaded to hugging face. Stay tuned!
