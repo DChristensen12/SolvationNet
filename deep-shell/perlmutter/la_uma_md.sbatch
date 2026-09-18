@@ -1,16 +1,20 @@
 #!/bin/bash
 #SBATCH --job-name=la_uma_md
-#SBATCH --account=M4292
-#SBATCH --qos=regular
+#SBATCH --account=m4292
 #SBATCH --constraint=gpu
-#SBATCH --nodes=1
-#SBATCH --gpus=4
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=64
+#SBATCH --qos=regular
 #SBATCH --time=24:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --gpus-per-node=4
+#SBATCH --cpus-per-task=64
 #SBATCH --output=la_uma_md_%j.out
 #SBATCH --error=la_uma_md_%j.err
 
+# Charged to m4292. If Slurm rejects this with an invalid account/partition
+# error, the GPU repo is the one to use: swap in m4292_g. m3278 (the MACE polar
+# NPT project) is the fallback if neither m4292 repo has GPU node-hours.
+#
 # All five anion systems at once on four A100s, round-robin, so PO4 ends up
 # sharing GPU 0 with F. A 390-atom molecule barely dents an 80 GB card and
 # sharing one costs far less than leaving a system to never start at all.
@@ -25,8 +29,12 @@
 
 set -uo pipefail
 
-module load conda 2>/dev/null || true
-conda activate solvationnet || { echo "ERROR: conda activate solvationnet failed"; exit 1; }
+module load python
+module load cudatoolkit
+
+# Created once by perlmutter/setup_env.sh. `source activate` rather than
+# `conda activate`, which needs a shell hook that batch jobs do not get.
+source activate solvationnet || { echo "ERROR: could not activate 'solvationnet'"; exit 1; }
 python -c "import fairchem, torch; assert torch.cuda.is_available()" \
     || { echo "ERROR: fairchem/CUDA unavailable in this environment"; exit 1; }
 
@@ -60,6 +68,10 @@ for i in "${!SYSTEMS[@]}"; do
     CUDA_VISIBLE_DEVICES=$gpu python run_uma_md.py \
         "droplets/La3+_${sys}_droplet.xyz" \
         -o "results/La3+_${sys}/" \
+        --steps 10000000 \
+        --dt 1.0 \
+        --temp 300.0 \
+        --traj-interval 1000 \
         --resume \
         > "results/La3+_${sys}/slurm.log" 2>&1 &
     PIDS+=($!)
@@ -100,5 +112,10 @@ fi
 
 echo ""
 echo "Finished: $(date)"
+
+# To benchmark instead of running production, swap the launch loop for a single
+# short run and read st/s off the step=20,000 progress line:
+#   python run_uma_md.py droplets/La3+_F_droplet.xyz -o bench_F/ --steps 20000
+
 # clamped, since FAIL + a child status can wrap past 255 and read as success
 [ "$FAIL" -eq 0 ] && exit 0 || exit 1
