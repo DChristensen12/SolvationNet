@@ -11,9 +11,12 @@
 #SBATCH --output=la_uma_md_%j.out
 #SBATCH --error=la_uma_md_%j.err
 
-# Charged to m4292. If Slurm rejects this with an invalid account/partition
-# error, the GPU repo is the one to use: swap in m4292_g. m3278 (the MACE polar
-# NPT project) is the fallback if neither m4292 repo has GPU node-hours.
+# Charged to m4292, not m4292_g, per PI instruction. Note that m4292_g is the
+# repo that has exhausted its GPU hours (15746 of 15746 charged as of
+# 2026-09-21), while m4292 still has ~30 node-hours of its 100 left. If Slurm
+# rejects this with an invalid account/partition error, that is NERSC insisting
+# GPU jobs charge the _g repo, and it is a question to take back to the PI
+# rather than something to fix here.
 #
 # All five anion systems at once on four A100s, round-robin, so PO4 ends up
 # sharing GPU 0 with F. A 390-atom molecule barely dents an 80 GB card and
