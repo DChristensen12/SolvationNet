@@ -2,7 +2,7 @@
 #SBATCH --job-name=la_uma_md
 #SBATCH --account=m4292
 #SBATCH --constraint=gpu
-#SBATCH --qos=gpu_regular
+#SBATCH --qos=regular
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -11,16 +11,23 @@
 #SBATCH --output=la_uma_md_%j.out
 #SBATCH --error=la_uma_md_%j.err
 
-# Charged to m4292 with the gpu_regular QOS, not m4292_g. m4292_g has spent its
-# GPU allocation (15746 of 15746 as of 2026-09-21) and its association is down
-# to overrun-class QOSes only -- it has no `regular` left to submit against.
-# m4292 does carry the full gpu_* family (gpu_regular, gpu_debug, gpu_shared,
-# gpu_preempt), and plain `regular` there is the CPU queue, which is what made
-# earlier submissions bounce on a zero GPU balance.
+# QOS stays `regular`. The gpu_* names that show up in `sacctmgr show assoc`
+# (gpu_regular, gpu_debug, ...) are internal: NERSC's submit filter derives them
+# from regular + --constraint=gpu. Asking for one by name is rejected with
+# "Job request does not match any supported policy".
 #
-# BUDGET: m4292 had ~30 node-hours left of 100 on 2026-09-21 and this job costs
-# 24. There is roughly one full-length run in the tank, so measure throughput
-# before spending it -- see the gpu_debug note at the bottom.
+# ACCOUNT / BUDGET, as of 2026-09-21. m4292_g has spent its GPU allocation
+# (15746 of 15746) and its association is down to overrun-class QOSes only.
+# m4292 shows ~30 node-hours left of 100, but those are CPU hours: a GPU job
+# submitted under m4292 still charges the GPU allocation, so it bounces with
+# "your balance is 0.00 node hours" exactly like m4292_g does. There is no GPU
+# time on this project by the normal route. Until the PI secures more, the only
+# thing that runs is the overrun queue on the spent repo:
+#
+#   sbatch -A m4292_g -q overrun --requeue perlmutter/la_uma_md.sbatch
+#
+# Overrun costs nothing, runs at the lowest priority and gets preempted; the
+# --resume flag below plus 50 ps checkpoints are what make that survivable.
 #
 # All five anion systems at once on four A100s, round-robin, so PO4 ends up
 # sharing GPU 0 with F. A 390-atom molecule barely dents an 80 GB card and
@@ -120,10 +127,10 @@ fi
 echo ""
 echo "Finished: $(date)"
 
-# To benchmark rather than spend the allocation, submit this same script to the
-# debug queue -- 30 minutes on four GPUs costs ~0.5 node-hours and is enough to
-# clear torch.compile warmup and print real st/s for all five systems:
-#   sbatch -q gpu_debug -t 00:30:00 perlmutter/la_uma_md.sbatch
+# To benchmark rather than spend an allocation, submit this same script to the
+# debug queue -- 30 minutes on four GPUs is enough to clear torch.compile
+# warmup and print real st/s for all five systems:
+#   sbatch -q debug -t 00:30:00 perlmutter/la_uma_md.sbatch
 #   grep st/s results/La3+_*/slurm.log
 # Then GPU-hours per system = 10000000 / st/s / 3600.
 
