@@ -2,7 +2,7 @@
 #SBATCH --job-name=la_uma_md
 #SBATCH --account=m4292
 #SBATCH --constraint=gpu
-#SBATCH --qos=regular
+#SBATCH --qos=gpu_regular
 #SBATCH --time=24:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -11,12 +11,16 @@
 #SBATCH --output=la_uma_md_%j.out
 #SBATCH --error=la_uma_md_%j.err
 
-# Charged to m4292, not m4292_g, per PI instruction. Note that m4292_g is the
-# repo that has exhausted its GPU hours (15746 of 15746 charged as of
-# 2026-09-21), while m4292 still has ~30 node-hours of its 100 left. If Slurm
-# rejects this with an invalid account/partition error, that is NERSC insisting
-# GPU jobs charge the _g repo, and it is a question to take back to the PI
-# rather than something to fix here.
+# Charged to m4292 with the gpu_regular QOS, not m4292_g. m4292_g has spent its
+# GPU allocation (15746 of 15746 as of 2026-09-21) and its association is down
+# to overrun-class QOSes only -- it has no `regular` left to submit against.
+# m4292 does carry the full gpu_* family (gpu_regular, gpu_debug, gpu_shared,
+# gpu_preempt), and plain `regular` there is the CPU queue, which is what made
+# earlier submissions bounce on a zero GPU balance.
+#
+# BUDGET: m4292 had ~30 node-hours left of 100 on 2026-09-21 and this job costs
+# 24. There is roughly one full-length run in the tank, so measure throughput
+# before spending it -- see the gpu_debug note at the bottom.
 #
 # All five anion systems at once on four A100s, round-robin, so PO4 ends up
 # sharing GPU 0 with F. A 390-atom molecule barely dents an 80 GB card and
@@ -116,9 +120,12 @@ fi
 echo ""
 echo "Finished: $(date)"
 
-# To benchmark instead of running production, swap the launch loop for a single
-# short run and read st/s off the step=20,000 progress line:
-#   python run_uma_md.py droplets/La3+_F_droplet.xyz -o bench_F/ --steps 20000
+# To benchmark rather than spend the allocation, submit this same script to the
+# debug queue -- 30 minutes on four GPUs costs ~0.5 node-hours and is enough to
+# clear torch.compile warmup and print real st/s for all five systems:
+#   sbatch -q gpu_debug -t 00:30:00 perlmutter/la_uma_md.sbatch
+#   grep st/s results/La3+_*/slurm.log
+# Then GPU-hours per system = 10000000 / st/s / 3600.
 
 # clamped, since FAIL + a child status can wrap past 255 and read as success
 [ "$FAIL" -eq 0 ] && exit 0 || exit 1
