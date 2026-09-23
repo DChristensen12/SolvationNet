@@ -1,15 +1,15 @@
 # Terminal Commands — Perlmutter
 
-Run these in order. One box = one command.
+I run these commands in order in my terminal after signing in to nersc. One box = one command.
 
 ---
 
 ## Run the job
 
-**1. Log in** (Password + OTP at the prompt)
+**1. Log in** — swap in your NERSC username. Password + OTP at the prompt.
 
 ```bash
-ssh dchrist2@perlmutter.nersc.gov
+ssh user@perlmutter.nersc.gov
 ```
 
 **2. Go to the working directory**
@@ -28,6 +28,11 @@ git pull
 
 ```bash
 sbatch -A m4292 -q overrun --requeue perlmutter/la_uma_md.sbatch
+```
+or alternatively 
+
+```
+# sbatch -A m4292_g -q overrun --requeue perlmutter/la_uma_md.sbatch
 ```
 
 Success looks like `Submitted batch job 1234567`.
@@ -77,7 +82,7 @@ Jobs time out or get preempted. Resubmitting resumes from the last checkpoint.
 Same command as step 4, as many times as needed until all five say DONE.
 
 ```bash
-sbatch -A m4292 -q overrun --requeue perlmutter/la_uma_md.sbatch
+sbatch -A m4292_g -q overrun --requeue perlmutter/la_uma_md.sbatch
 ```
 
 ---
@@ -111,8 +116,4 @@ sbatch -q debug -t 00:30:00 perlmutter/la_uma_md.sbatch
   policy". Use `regular`, `debug`, or `overrun`.
 - `overrun` is free but lowest priority and gets preempted. That is fine —
   the script checkpoints every 50 ps and always resumes.
-- Submitting under `m4292`, not `m4292_g`, per PI instruction. If overrun is
-  refused there, it is because overrun is meant for repos that have spent their
-  allocation and `m4292` has hours left; `m4292_g` is the spent one. Take that
-  back to the PI rather than switching on your own.
 - `sbatch` returns immediately. You can log out; the job keeps running.
