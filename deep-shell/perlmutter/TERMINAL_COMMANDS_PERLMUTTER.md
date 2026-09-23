@@ -1,12 +1,12 @@
-# Terminal Commands — Perlmutter
+# Perlmutter Terminal Commands
 
-I run these commands in order in my terminal after signing in to nersc. One box = one command.
+I run these in order after signing in to NERSC. One box = one command.
 
 ---
 
 ## Run the job
 
-**1. Log in** — swap in your NERSC username. Password + OTP at the prompt.
+**1. Log in.** Use your own NERSC username. Password + OTP at the prompt.
 
 ```bash
 ssh user@perlmutter.nersc.gov
@@ -29,14 +29,14 @@ git pull
 ```bash
 sbatch -A m4292 -q overrun --requeue perlmutter/la_uma_md.sbatch
 ```
-or alternatively 
+
+or alternatively
 
 ```
 # sbatch -A m4292_g -q overrun --requeue perlmutter/la_uma_md.sbatch
 ```
 
-Success looks like `Submitted batch job 1234567`.
-Anything with `error:` means it did not submit — see Troubleshooting below.
+If it worked you get a job ID back. If the output says `error:`, check Troubleshooting.
 
 **5. Confirm it queued**
 
@@ -44,7 +44,7 @@ Anything with `error:` means it did not submit — see Troubleshooting below.
 squeue -u $USER
 ```
 
-A row = it took. An empty table = nothing is running.
+A row means it took. An empty table means nothing is running.
 
 ---
 
@@ -78,11 +78,11 @@ ls results/La3+_*/final.xyz
 
 ## Resubmit
 
-Jobs time out or get preempted. Resubmitting resumes from the last checkpoint.
-Same command as step 4, as many times as needed until all five say DONE.
+Jobs time out or get preempted. Resubmitting picks up from the last checkpoint.
+Run step 4 again as many times as it takes.
 
 ```bash
-sbatch -A m4292_g -q overrun --requeue perlmutter/la_uma_md.sbatch
+sbatch -A m4292 -q overrun --requeue perlmutter/la_uma_md.sbatch
 ```
 
 ---
@@ -95,7 +95,7 @@ sbatch -A m4292_g -q overrun --requeue perlmutter/la_uma_md.sbatch
 iris
 ```
 
-**`git pull` refuses because of local edits** — throw away the Perlmutter-side change, then pull again
+**`git pull` refuses because of local edits.** Drop the Perlmutter-side change, then pull again.
 
 ```bash
 git checkout -- perlmutter/la_uma_md.sbatch
@@ -111,9 +111,9 @@ sbatch -q debug -t 00:30:00 perlmutter/la_uma_md.sbatch
 
 ## Notes
 
-- Do not submit with `-q gpu_regular` or `-q gpu_debug`. Those names are
-  internal; asking for them gives "Job request does not match any supported
-  policy". Use `regular`, `debug`, or `overrun`.
-- `overrun` is free but lowest priority and gets preempted. That is fine —
-  the script checkpoints every 50 ps and always resumes.
-- `sbatch` returns immediately. You can log out; the job keeps running.
+- Don't use `-q gpu_regular` or `-q gpu_debug`. Those names are internal and
+  Slurm rejects them with "Job request does not match any supported policy".
+  Use `regular`, `debug`, or `overrun`.
+- `overrun` is free but runs at the lowest priority and gets preempted. The
+  script checkpoints every 50 ps and resumes, so that's survivable.
+- `sbatch` returns right away. You can log out and the job keeps going.
