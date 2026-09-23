@@ -1,0 +1,5 @@
+# Notebooks arent SolvationNet, the python scripts are.
+*.ipynb linguist-detectable=false
+*.xyz  linguist-generated=true
+*.pdb  linguist-generated=true
+*.dat  linguist-generated=true
