@@ -33,26 +33,37 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 torch.set_float32_matmul_precision("high")
 
 
-def get_uma_calculator(device="cuda"):
+def get_uma_calculator(device="cuda", compile_model=False):
     """Load FAIRChem UMA-s-1.2 (OMol25) with turbo inference settings."""
     from fairchem.core import FAIRChemCalculator, pretrained_mlip
 
     predictor = pretrained_mlip.get_predict_unit("uma-s-1p2", device=device)
 
-    # checkpointing trades speed for VRAM, which only ever pays off in training
-    for attr in ("model", "inference_model"):
-        if hasattr(predictor, attr):
-            m = getattr(predictor, attr)
-            if hasattr(m, "use_checkpoint"):
-                m.use_checkpoint = False
+    # fairchem keeps the real network one level down, at predictor.model.module,
+    # and reads that attribute itself at predict time. Rebinding predictor.model
+    # strips it and the first get_forces() dies with
+    #   AttributeError: 'function' object has no attribute 'module'
+    # so only ever touch the inner module, never predictor.model itself.
+    net = getattr(predictor, "model", None)
+    inner = getattr(net, "module", None) if net is not None else None
 
-    # fused kernels, if this model takes it. benchmark it, the edge count moves
-    # every step and recompile churn can cost more than it saves
-    try:
-        if hasattr(predictor, "model"):
-            predictor.model = torch.compile(predictor.model)
-    except Exception:
-        pass
+    # checkpointing trades speed for VRAM, which only ever pays off in training
+    for m in (inner, net, getattr(predictor, "inference_model", None)):
+        if m is not None and hasattr(m, "use_checkpoint"):
+            m.use_checkpoint = False
+
+    # Off by default, and measure before trusting it: the neighbour list changes
+    # size every step, so dynamo re-traces constantly and the recompiles can
+    # cost more than the fused kernels save.
+    if compile_model:
+        if inner is None:
+            print("--compile ignored: no predictor.model.module to compile",
+                  flush=True)
+        else:
+            try:
+                net.module = torch.compile(inner)
+            except Exception as e:
+                print(f"--compile ignored: {e}", flush=True)
 
     return FAIRChemCalculator(predictor, task_name="omol")
 
@@ -81,7 +92,7 @@ def run(args):
     print(f"Output:  {args.output}")
 
     print("\nLoading UMA-s-1.2 (OMol25, turbo)...", flush=True)
-    calc = get_uma_calculator(device)
+    calc = get_uma_calculator(device, compile_model=args.compile)
     atoms.calc = calc
 
     start_step = 0
@@ -185,6 +196,9 @@ def main():
                     help="checkpoint every N steps (default: 50000 = 50 ps)")
     p.add_argument("--snap-interval", type=int, default=500_000,
                     help="snapshot every N steps (default: 500000 = 500 ps)")
+    p.add_argument("--compile", action="store_true",
+                   help="wrap the network in torch.compile (measure first; "
+                        "the changing neighbour list can make it a net loss)")
     p.add_argument("--resume", action="store_true",
                     help="resume from last checkpoint")
     args = p.parse_args()
