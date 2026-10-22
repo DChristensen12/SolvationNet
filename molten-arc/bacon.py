@@ -123,8 +123,10 @@ def sizzle(system_name, box_size, density, dry_run=False):
         print(f"         --system {system_name} --box-size {box_size} \\")
         print(f"         --density {density} --ion-dir data/ions \\")
         print(f"         --output data/packed/{system_name}_{box_size:.0f}A.pdb")
-        print(f"    3. Equilibrate at {temp_C + 273.15:.0f} K (NVT → NPT)")
-        print(f"    4. Production MD")
+        print(f"    3. Equilibrate on Perlmutter (NVT → NPT with UMA):")
+        print(f"         cd perlmutter && python submit.py create {system_name.lower()}_run \\")
+        print(f"           --system {system_name} \\")
+        print(f"           --inputs '../data/packed/{system_name}*.xyz'")
 
 
 def main():

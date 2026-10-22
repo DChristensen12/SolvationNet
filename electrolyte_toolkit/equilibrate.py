@@ -153,7 +153,7 @@ def check_convergence(densities, threshold_pct=1.0):
 
 
 def run_nvt(atoms, name, checkpoint_dir, model, n_steps=NVT_STEPS, start_step=0,
-            prev_temps=None, prev_pes=None, device="cuda"):
+            prev_temps=None, prev_pes=None, device="cuda", temperature_K=TEMPERATURE):
     import torch
     from ase.md.langevin import Langevin
     from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
@@ -167,9 +167,9 @@ def run_nvt(atoms, name, checkpoint_dir, model, n_steps=NVT_STEPS, start_step=0,
     atoms.calc = _get_calc(model, device=device)
 
     if start_step == 0:
-        MaxwellBoltzmannDistribution(atoms, temperature_K=TEMPERATURE)
+        MaxwellBoltzmannDistribution(atoms, temperature_K=temperature_K)
 
-    dyn = Langevin(atoms, timestep=1.0 * units.fs, temperature_K=TEMPERATURE,
+    dyn = Langevin(atoms, timestep=1.0 * units.fs, temperature_K=temperature_K,
                    friction=0.01 / units.fs)
     dyn.nsteps = start_step
 
@@ -210,7 +210,8 @@ def run_nvt(atoms, name, checkpoint_dir, model, n_steps=NVT_STEPS, start_step=0,
 
 
 def run_npt(atoms, name, checkpoint_dir, model, n_steps=NPT_STEPS, start_step=0,
-            prev_temps=None, prev_pes=None, prev_densities=None, device="cuda"):
+            prev_temps=None, prev_pes=None, prev_densities=None, device="cuda",
+            temperature_K=TEMPERATURE):
     import torch
     from ase.io import write
     from ase.md.melchionna import MelchionnaNPT as NPT
@@ -226,10 +227,10 @@ def run_npt(atoms, name, checkpoint_dir, model, n_steps=NPT_STEPS, start_step=0,
     atoms.calc = _get_calc(model, device=device)
 
     if start_step == 0:
-        MaxwellBoltzmannDistribution(atoms, temperature_K=TEMPERATURE)
+        MaxwellBoltzmannDistribution(atoms, temperature_K=temperature_K)
 
     npt_kwargs = get_npt_kwargs(model, units)
-    dyn = NPT(atoms, timestep=1.0 * units.fs, temperature_K=TEMPERATURE, **npt_kwargs)
+    dyn = NPT(atoms, timestep=1.0 * units.fs, temperature_K=temperature_K, **npt_kwargs)
     dyn.nsteps = start_step
 
     temps = list(prev_temps or [])
@@ -402,6 +403,8 @@ def main():
     mode.add_argument("--status", action="store_true",
                       help="Print status of all boxes and exit")
 
+    parser.add_argument("--temperature", type=float, default=TEMPERATURE,
+                        help=f"Temperature in K (default: {TEMPERATURE})")
     parser.add_argument("--nvt-steps", type=int, default=NVT_STEPS,
                         help=f"NVT steps (default: {NVT_STEPS})")
     parser.add_argument("--npt-steps", type=int, default=NPT_STEPS,
@@ -432,14 +435,16 @@ def main():
             atoms, temps, pes = run_nvt(
                 atoms, name, args.checkpoint_dir, args.model,
                 n_steps=args.nvt_steps, start_step=step,
-                prev_temps=prev_t, prev_pes=prev_pe, device=args.device)
+                prev_temps=prev_t, prev_pes=prev_pe, device=args.device,
+                temperature_K=args.temperature)
             all_temps, all_pes = list(temps), list(pes)
 
             if args.workflow == "nvt+npt":
                 print(f"\nNPT: {name}")
                 atoms, temps, pes, densities = run_npt(
                     atoms, name, args.checkpoint_dir, args.model,
-                    n_steps=args.npt_steps, device=args.device)
+                    n_steps=args.npt_steps, device=args.device,
+                    temperature_K=args.temperature)
                 all_temps.extend(temps); all_pes.extend(pes)
                 all_densities = list(densities)
 
@@ -448,7 +453,8 @@ def main():
                 print(f"\nNPT: {name}")
                 atoms, temps, pes, densities = run_npt(
                     atoms, name, args.checkpoint_dir, args.model,
-                    n_steps=args.npt_steps, device=args.device)
+                    n_steps=args.npt_steps, device=args.device,
+                    temperature_K=args.temperature)
                 all_temps.extend(temps); all_pes.extend(pes)
                 all_densities = list(densities)
             else:
@@ -460,7 +466,8 @@ def main():
                 atoms, name, args.checkpoint_dir, args.model,
                 n_steps=args.npt_steps, start_step=step,
                 prev_temps=prev_t, prev_pes=prev_pe,
-                prev_densities=prev_rho, device=args.device)
+                prev_densities=prev_rho, device=args.device,
+                temperature_K=args.temperature)
             all_temps, all_pes = list(temps), list(pes)
             all_densities = list(densities)
 
@@ -484,6 +491,7 @@ def main():
     print(f"Input:        {args.input}")
     print(f"Model:        {args.model}")
     print(f"Workflow:     {args.workflow}")
+    print(f"Temperature:  {args.temperature} K")
     print(f"Checkpoints:  {args.checkpoint_dir}/{name}/")
     print(f"Device:       {args.device}")
 
@@ -496,7 +504,8 @@ def main():
         print(f"\nNVT thermalization: {name}")
         atoms, temps, pes = run_nvt(
             atoms, name, args.checkpoint_dir, args.model,
-            n_steps=args.nvt_steps, device=args.device)
+            n_steps=args.nvt_steps, device=args.device,
+            temperature_K=args.temperature)
         all_temps.extend(temps); all_pes.extend(pes)
 
         nvt_path = os.path.join(box_dir(args.checkpoint_dir, name), f"{name}_nvt.xyz")
@@ -507,7 +516,8 @@ def main():
         print(f"\nNPT density equilibration: {name}")
         atoms, temps, pes, densities = run_npt(
             atoms, name, args.checkpoint_dir, args.model,
-            n_steps=args.npt_steps, device=args.device)
+            n_steps=args.npt_steps, device=args.device,
+            temperature_K=args.temperature)
         all_temps.extend(temps); all_pes.extend(pes)
         all_densities = list(densities)
 
