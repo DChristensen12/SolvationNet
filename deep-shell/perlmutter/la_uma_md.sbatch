@@ -51,6 +51,11 @@ module load cudatoolkit
 source activate solvationnet || { echo "ERROR: could not activate 'solvationnet'"; exit 1; }
 python -c "import fairchem, torch; assert torch.cuda.is_available()" \
     || { echo "ERROR: fairchem/CUDA unavailable in this environment"; exit 1; }
+HF_HUB_OFFLINE=1 python -c "
+from fairchem.core import pretrained_mlip
+p = pretrained_mlip.get_predict_unit('uma-s-1p2', device='cpu')
+assert hasattr(p.model, 'module')
+" || { echo "ERROR: cannot load uma-s-1p2 from cache with HF_HUB_OFFLINE=1"; exit 1; }
 
 WORK="${SLURM_SUBMIT_DIR:-$SCRATCH/solvationnet/deep-shell}"
 cd "$WORK" || exit 1
@@ -72,6 +77,15 @@ for sys in "${SYSTEMS[@]}"; do
     mkdir -p "results/La3+_${sys}"
 done
 
+# The UMA weights are already cached under ~/.cache/fairchem, but
+# hf_hub_download still takes an flock on that directory before it will hand
+# back a path, and flock is unsupported on global homes from the compute nodes:
+#   OSError: [Errno 524] Unknown error 524
+# Five processes grabbing that lock at once is what killed job 60059899 after
+# 1m57s, before a single model had loaded. Offline mode reads the cache
+# directly and never reaches the locking path.
+export HF_HUB_OFFLINE=1
+
 echo "Launching ${#SYSTEMS[@]} systems across $NGPU GPUs"
 PIDS=()
 NAMES=()
@@ -90,6 +104,7 @@ for i in "${!SYSTEMS[@]}"; do
         > "results/La3+_${sys}/slurm.log" 2>&1 &
     PIDS+=($!)
     NAMES+=("$sys")
+    sleep 5   # don't let five processes read the same cache files in lockstep
 done
 echo ""
 
