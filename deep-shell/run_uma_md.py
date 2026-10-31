@@ -37,7 +37,26 @@ def get_uma_calculator(device="cuda", compile_model=False):
     """Load FAIRChem UMA-s-1.2 (OMol25) with turbo inference settings."""
     from fairchem.core import FAIRChemCalculator, pretrained_mlip
 
-    predictor = pretrained_mlip.get_predict_unit("uma-s-1p2", device=device)
+    # Ask fairchem for tf32 and no activation checkpointing through its own
+    # settings object. Our module-level set_float32_matmul_precision("high")
+    # does NOT reach the compiled graph -- torch._inductor warned "TensorFloat32
+    # tensor cores available but not enabled" on job 60508816, and
+    # InferenceSettings defaults tf32=False. Tensor cores are worth roughly 2x
+    # on matmul, against a measured 13.9 st/s (200 h/system).
+    settings = "default"
+    try:
+        from fairchem.core.units.mlip_unit.api.inference import InferenceSettings
+        settings = InferenceSettings(
+            tf32=True,
+            activation_checkpointing=False,  # a training trade, not inference
+            compile=False,                   # edge count moves every step
+        )
+    except Exception as e:
+        print(f"InferenceSettings unavailable ({e}); using 'default'", flush=True)
+
+    predictor = pretrained_mlip.get_predict_unit(
+        "uma-s-1p2", device=device, inference_settings=settings
+    )
 
     # fairchem keeps the real network one level down, at predictor.model.module,
     # and reads that attribute itself at predict time. Rebinding predictor.model
@@ -66,6 +85,51 @@ def get_uma_calculator(device="cuda", compile_model=False):
                 print(f"--compile ignored: {e}", flush=True)
 
     return FAIRChemCalculator(predictor, task_name="omol")
+
+
+def _trim_after_checkpoint(traj_path, log_path, start_step, traj_interval):
+    """Drop trajectory frames and log rows written past the resume point.
+
+    Checkpoints land every --ckpt-interval (50 ps) but the trajectory and log
+    are written every --traj-interval / --log-interval (1 ps), so a job killed
+    mid-interval leaves up to 49 ps of output beyond the step we resume from.
+    Appending after that duplicates the span and leaves the step column
+    non-monotonic. Overrun preempts often, so this would compound every cycle.
+    """
+    if os.path.exists(log_path):
+        with open(log_path) as f:
+            lines = f.readlines()
+        kept = []
+        for ln in lines:
+            if ln.startswith("#"):
+                kept.append(ln)
+                continue
+            try:
+                if int(ln.split()[0]) <= start_step:
+                    kept.append(ln)
+            except (ValueError, IndexError):
+                kept.append(ln)
+        if len(kept) != len(lines):
+            with open(log_path, "w") as f:
+                f.writelines(kept)
+            print(f"Trimmed md.log back to step <= {start_step:,}")
+
+    if os.path.exists(traj_path) and traj_interval > 0:
+        want = start_step // traj_interval
+        with open(traj_path) as f:
+            lines = f.readlines()
+        i = frames = 0
+        while i < len(lines) and frames < want:
+            try:
+                natoms = int(lines[i].strip())
+            except ValueError:
+                break
+            i += 2 + natoms          # count line + comment line + atoms
+            frames += 1
+        if i < len(lines):
+            with open(traj_path, "w") as f:
+                f.writelines(lines[:i])
+            print(f"Trimmed trajectory.xyz back to {frames} frame(s)")
 
 
 def run(args):
@@ -103,17 +167,23 @@ def run(args):
         atoms.set_velocities(ckpt["velocities"])
         start_step = ckpt["step"]
         print(f"Resumed from step {start_step:,} ({start_step * args.dt / 1e6:.3f} ns)")
+        _trim_after_checkpoint(traj_path, log_path, start_step, args.traj_interval)
     else:
         MaxwellBoltzmannDistribution(atoms, temperature_K=args.temp)
         print("Initialized Maxwell-Boltzmann velocities")
         if os.path.exists(traj_path):
             os.remove(traj_path)
 
+    # fixcm=False because FixCom is already on the atoms above. Langevin
+    # defaults fixcm=True, and ASE warns that its own implementation "does not
+    # strictly sample the correct NVT distributions" -- deprecated since 3.28 in
+    # favour of exactly the constraint we already use.
     dyn = Langevin(
         atoms,
         timestep=args.dt * units.fs,
         temperature_K=args.temp,
         friction=args.friction / units.fs,
+        fixcm=False,
     )
 
     mode = "a" if start_step > 0 else "w"
@@ -155,7 +225,8 @@ def run(args):
                 }, f)
             os.replace(tmp, ckpt_path)
 
-        if step % 10_000 == 0:
+        done = step - start_step
+        if done in (100, 1000) or step % args.progress_interval == 0:
             elapsed = time.time() - t0
             speed = (step - start_step) / elapsed if elapsed > 0 else 0
             ke = atoms.get_kinetic_energy()
@@ -192,10 +263,15 @@ def main():
                     help="log every N steps (default: 1000 = 1 ps)")
     p.add_argument("--traj-interval", type=int, default=1000,
                     help="save trajectory every N steps (default: 1000 = 1 ps)")
-    p.add_argument("--ckpt-interval", type=int, default=50_000,
+    p.add_argument("--ckpt-interval", type=int, default=10_000,
                     help="checkpoint every N steps (default: 50000 = 50 ps)")
     p.add_argument("--snap-interval", type=int, default=500_000,
                     help="snapshot every N steps (default: 500000 = 500 ps)")
+    p.add_argument("--progress-interval", type=int, default=10_000,
+                   help="print a step=/st/s progress line every N steps "
+                        "(default: 10000). A line is always printed 100 and "
+                        "1000 steps in, so throughput is visible immediately "
+                        "on a short test job.")
     p.add_argument("--compile", action="store_true",
                    help="wrap the network in torch.compile (measure first; "
                         "the changing neighbour list can make it a net loss)")

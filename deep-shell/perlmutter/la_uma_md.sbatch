@@ -69,13 +69,40 @@ echo ""
 nvidia-smi --query-gpu=index,name,memory.total --format=csv,noheader
 echo ""
 
-SYSTEMS=(F OH NO3 CO3 PO4)
+ALL_SYSTEMS=(F OH NO3 CO3 PO4)
 NGPU=4
 
 mkdir -p results
-for sys in "${SYSTEMS[@]}"; do
+for sys in "${ALL_SYSTEMS[@]}"; do
     mkdir -p "results/La3+_${sys}"
 done
+
+# One system per GPU, never two. Measured on job 60508816: a system with a GPU
+# to itself ran at 13.9 st/s (22k steps in 30 min), while F and PO4 sharing GPU
+# 0 managed ~5 st/s each (9k steps). Sharing does work -- it is not a failure --
+# but one card serving two systems yields ~10 st/s against 13.9 dedicated, so
+# four systems on four GPUs beats five on four: 55.6 st/s aggregate vs 51.7.
+#
+# Five systems do not fit on four GPUs, so each job takes the NGPU systems that
+# are furthest behind. Resubmitting repeatedly advances all five evenly, because
+# whichever sat out last time is now the laggard.
+PENDING=()
+for sys in "${ALL_SYSTEMS[@]}"; do
+    [ -f "results/La3+_${sys}/final.xyz" ] && continue      # already finished
+    step=$(tail -n 1 "results/La3+_${sys}/md.log" 2>/dev/null | awk '{print $1+0}')
+    PENDING+=("${step:-0} $sys")
+done
+
+SYSTEMS=()
+while read -r _ sys; do
+    [ -n "$sys" ] && SYSTEMS+=("$sys")
+done < <(printf '%s\n' "${PENDING[@]}" | sort -n | head -n "$NGPU")
+
+if [ "${#SYSTEMS[@]}" -eq 0 ]; then
+    echo "All systems report final.xyz -- nothing to run."
+    exit 0
+fi
+echo "Least-advanced systems this pass: ${SYSTEMS[*]}"
 
 # The UMA weights are already cached under ~/.cache/fairchem, but
 # hf_hub_download still takes an flock on that directory before it will hand
@@ -91,7 +118,7 @@ PIDS=()
 NAMES=()
 for i in "${!SYSTEMS[@]}"; do
     sys="${SYSTEMS[$i]}"
-    gpu=$(( i % NGPU ))
+    gpu=$i                     # one system per GPU; SYSTEMS is capped at NGPU
     echo "  GPU $gpu → La3+_${sys}"
     CUDA_VISIBLE_DEVICES=$gpu python run_uma_md.py \
         "droplets/La3+_${sys}_droplet.xyz" \
@@ -120,7 +147,7 @@ echo "All runs returned ($(date)), failures: $FAIL"
 echo ""
 echo "=== Summary ==="
 INCOMPLETE=0
-for sys in "${SYSTEMS[@]}"; do
+for sys in "${ALL_SYSTEMS[@]}"; do
     dir="results/La3+_${sys}"
     if [ -f "$dir/final.xyz" ]; then
         echo "  La3+_${sys}:  DONE (final.xyz exists)"
