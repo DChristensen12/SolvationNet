@@ -23,8 +23,8 @@ env/
 # Project output directories
 inputs/
 packed/
-nvt/
-npt/
+#nvt/
+#npt/
 anneal/
 analysis/
 vmd/
