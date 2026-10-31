@@ -3,7 +3,7 @@
 #   bash deep-shell/perlmutter/deploy.sh <nersc_username>
 #
 # Then ssh over and:
-#   cd $SCRATCH/solvationnet/deep-shell
+#   cd $SCRATCH/SolvationNet/deep-shell
 #   bash perlmutter/setup_env.sh          # once
 #   sbatch perlmutter/la_uma_md.sbatch
 
@@ -13,7 +13,7 @@ USER="${1:?Usage: $0 <nersc_username>}"
 HOST="perlmutter.nersc.gov"
 REMOTE="$USER@$HOST"
 
-SCRATCH_DIR="\$SCRATCH/solvationnet/deep-shell"
+SCRATCH_DIR="\$SCRATCH/SolvationNet/deep-shell"
 echo "Deploying to $REMOTE:$SCRATCH_DIR"
 
 echo ""

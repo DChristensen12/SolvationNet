@@ -6,11 +6,11 @@ Batch-run SolvationNet scripts on [NERSC Perlmutter](https://docs.nersc.gov/syst
 
 You already know how to SSH into Perlmutter and write sbatch scripts. This tool handles the parts that are tedious to do manually when you're running 80+ electrolyte boxes:
 
-- **Batch submission** — one command submits all your boxes as a SLURM job array
-- **Campaign tracking** — persistent state that remembers which boxes are done, failed, or still running, even across terminal sessions
-- **Auto-retry** — detects OOM, timeout, and NaN failures; resubmits only the failures from their last checkpoint
-- **Pipeline chaining** — equilibrate → run_md → analyze as a single command with SLURM dependency chains
-- **Result aggregation** — downloads completed results into the correct local directory structure
+- **Batch submission**: one command submits all your boxes as a SLURM job array
+- **Campaign tracking**: persistent state that remembers which boxes are done, failed, or still running, even across terminal sessions
+- **Auto-retry**: detects OOM, timeout, and NaN failures; resubmits only the failures from their last checkpoint
+- **Pipeline chaining**: equilibrate → run_md → analyze as a single command with SLURM dependency chains
+- **Result aggregation**: downloads completed results into the correct local directory structure
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ You already know how to SSH into Perlmutter and write sbatch scripts. This tool 
    ```bash
    ./sshproxy.sh -u your_username
    ```
-3. **Python 3.10+** on your local machine (no extra pip packages needed — the tool uses only the standard library)
+3. **Python 3.10+** on your local machine (no extra pip packages needed, the tool uses only the standard library)
 4. **rsync** on your local machine (pre-installed on macOS and Linux)
 
 ## Quickstart
@@ -59,11 +59,11 @@ Interactive prompt for your NERSC username, allocation code, and conda env name.
 python tools/perlmutter/perlmutter.py setup
 ```
 
-This saves your config to `.perlmutter.json` at the repo root (gitignored — no credentials are committed).
+This saves your config to `.perlmutter.json` at the repo root (gitignored, no credentials are committed).
 
 ### `sync`
 
-Pushes the latest `electrolyte_toolkit/` and `deep-shell/` code to Perlmutter using rsync (single SSH connection, delta transfer — much faster than copying files one by one).
+Pushes the latest `electrolyte_toolkit/` and `deep-shell/` code to Perlmutter using rsync (single SSH connection, delta transfer, much faster than copying files one by one).
 
 ```bash
 python tools/perlmutter/perlmutter.py sync            # push code only
@@ -162,7 +162,7 @@ This queries SLURM's `sacct` on Perlmutter in a single SSH call and classifies e
 
 ### `campaign retry`
 
-Resubmits failed tasks. Only retries OOM, timeout, and generic failures by default — NaN failures are excluded because they indicate a physics problem, not a resource issue.
+Resubmits failed tasks. Only retries OOM, timeout, and generic failures by default. NaN failures are excluded because they indicate a physics problem, not a resource issue.
 
 ```bash
 python tools/perlmutter/perlmutter.py campaign retry <name> \
@@ -197,7 +197,7 @@ python tools/perlmutter/perlmutter.py campaign list
 
 ### `campaign pipeline`
 
-Submits a multi-step workflow where each step runs only after its corresponding task in the previous step succeeds. Uses SLURM's `--dependency=aftercorr:` for per-task chaining (not per-array — task 42 of step 2 waits only for task 42 of step 1, not all 83).
+Submits a multi-step workflow where each step runs only after its corresponding task in the previous step succeeds. Uses SLURM's `--dependency=aftercorr:` for per-task chaining (not per-array, task 42 of step 2 waits only for task 42 of step 1, not all 83).
 
 ```bash
 python tools/perlmutter/perlmutter.py campaign pipeline <name> \
@@ -242,7 +242,7 @@ If you don't specify `-o`, the output directory is auto-derived from the campaig
 | `nvt` + `orbmol_v2` | `data/na-electrolyte-solvation-boxes/NVT_OrbMolV2/` |
 | `nvt+npt` + `uma` | `data/na-electrolyte-solvation-boxes/NVT-NPT_FAIRChem-UMA/` |
 
-This means `pull` drops results exactly where the repo expects them — ready for the dataset README and HuggingFace upload.
+This means `pull` drops results exactly where the repo expects them, ready for the dataset README and HuggingFace upload.
 
 ```bash
 # Download final .xyz structures
@@ -274,7 +274,7 @@ python tools/perlmutter/perlmutter.py tail ds3_uma_npt 42
 
 ### `checkpoints`
 
-Runs `equilibrate.py --status` on Perlmutter to show the checkpoint-level view — box name, equilibration phase, step count, density, and NaN flags.
+Runs `equilibrate.py --status` on Perlmutter to show the checkpoint-level view, box name, equilibration phase, step count, density, and NaN flags.
 
 ```bash
 python tools/perlmutter/perlmutter.py checkpoints              # all boxes
@@ -361,7 +361,7 @@ The tool classifies failures by type and handles each appropriately:
 
 **NaN detection:** The sbatch template runs a Python post-check after `equilibrate.py` finishes. If the final structure contains NaN positions, the task exits with code 42. The campaign tracker marks this as `nan` and excludes it from auto-retry because retrying from the same checkpoint will hit the same NaN. These need manual investigation (try a different model, check the input geometry, etc.).
 
-**Checkpoint-aware resume:** When a task is retried, the sbatch template checks whether a checkpoint directory already exists. If so, it passes `--resume BOX_NAME` to `equilibrate.py` instead of starting fresh. This means OOM and timeout retries pick up exactly where they left off — no wasted compute.
+**Checkpoint-aware resume:** When a task is retried, the sbatch template checks whether a checkpoint directory already exists. If so, it passes `--resume BOX_NAME` to `equilibrate.py` instead of starting fresh. This means OOM and timeout retries pick up exactly where they left off, no wasted compute.
 
 ## Best Practices
 
@@ -416,7 +416,7 @@ Equilibration time depends heavily on system size (atom count) and step count. R
 | ~2000 | ~2-3 hr | ~4-6 hr |
 | ~5000+ | ~6-8 hr | ~12+ hr |
 
-Start with `--time 04:00:00` for most boxes. If jobs time out, retry with `--time 08:00:00` — checkpoints mean you don't lose progress.
+Start with `--time 04:00:00` for most boxes. If jobs time out, retry with `--time 08:00:00`, checkpoints mean you don't lose progress.
 
 ### Keep `--max-concurrent` reasonable
 
@@ -437,7 +437,7 @@ test_3boxes_debug     # Test run
 
 | File | Purpose |
 |------|---------|
-| `perlmutter.py` | Main CLI — all commands route through here |
+| `perlmutter.py` | Main CLI, all commands route through here |
 | `campaign.py` | Campaign state management, sacct parsing, dashboard formatting |
 | `setup_env.sh` | Creates/updates the conda env on Perlmutter |
 | `templates/equilibrate_array.sbatch` | SLURM job array template for batch equilibration |
@@ -456,16 +456,16 @@ These live at the repo root and are gitignored. Each user runs `setup` to create
 
 ## Troubleshooting
 
-**"Not configured. Run: perlmutter.py setup"** — You haven't run `setup` yet, or the `.perlmutter.json` file was deleted. Run `setup` again.
+**"Not configured. Run: perlmutter.py setup"**, You haven't run `setup` yet, or the `.perlmutter.json` file was deleted. Run `setup` again.
 
-**SSH errors** — Your sshproxy certificate probably expired. Re-run `sshproxy.sh -u your_username` and try again.
+**SSH errors**: your sshproxy certificate probably expired. Re-run `sshproxy.sh -u your_username` and try again.
 
-**"No files match: ..."** — The glob pattern didn't find any files. Make sure you're running from the repo root and the path is correct. Wrap globs in quotes so your shell doesn't expand them before Python sees them.
+**"No files match: ..."**, The glob pattern didn't find any files. Make sure you're running from the repo root and the path is correct. Wrap globs in quotes so your shell doesn't expand them before Python sees them.
 
-**All tasks show "submitted" but nothing is running** — The SLURM queue may be full. Run `perlmutter.py ssh "squeue -u $USER"` to check. Jobs in the `PD` (pending) state are waiting for resources.
+**All tasks show "submitted" but nothing is running**, The SLURM queue may be full. Run `perlmutter.py ssh "squeue -u $USER"` to check. Jobs in the `PD` (pending) state are waiting for resources.
 
-**Many OOM failures** — The system may be too large for a single A100's 80 GB. Try reducing `--npt-steps` to get a shorter run, or contact the group about multi-GPU strategies.
+**Many OOM failures**, The system may be too large for a single A100's 80 GB. Try reducing `--npt-steps` to get a shorter run, or contact the group about multi-GPU strategies.
 
-**NaN failures** — The ML potential produced unstable forces. Common causes: bad initial geometry (atoms too close), unsupported chemistry for the chosen model, or insufficient equilibration before NPT. Try a different `--model`, or inspect the input box in the 3D viewer for clashes.
+**NaN failures**, The ML potential produced unstable forces. Common causes: bad initial geometry (atoms too close), unsupported chemistry for the chosen model, or insufficient equilibration before NPT. Try a different `--model`, or inspect the input box in the 3D viewer for clashes.
 
-**Campaign state seems stale** — `campaign status` refreshes from SLURM each time you run it. If a job finished between your last status check and now, just run status again.
+**Campaign state seems stale**, `campaign status` refreshes from SLURM each time you run it. If a job finished between your last status check and now, just run status again.

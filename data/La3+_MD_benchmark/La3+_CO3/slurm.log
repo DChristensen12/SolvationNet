@@ -1,0 +1,24 @@
+System:  La3+_CO3_droplet.xyz
+Atoms:   393   Charge: -1   Spin: 1
+Device:  cuda
+Steps:   10,000,000 (10.0 ns)
+Temp:    300.0 K   Friction: 0.01/fs
+Output:  results/La3+_CO3/
+
+Loading UMA-s-1.2 (OMol25, turbo)...
+/pscratch/sd/d/dchrist2/SolvationNet/deep-shell/run_uma_md.py:107: DeprecationWarning: Use thermalize_momenta
+  MaxwellBoltzmannDistribution(atoms, temperature_K=args.temp)
+/global/homes/d/dchrist2/.conda/envs/solvationnet/lib/python3.12/site-packages/ase/md/langevin.py:102: FutureWarning: The implementation of `fixcm=True` in `Langevin` does not strictly sample the correct NVT distributions. The deviations are typically small for large systems but can be more pronounced for small systems. Use `fixcm=False` together with `ase.constraints.FixCom`. `fixcm` is deprecated since ASE 3.28.0 and will be removed in a future release.
+  warnings.warn(msg, FutureWarning)
+Initialized Maxwell-Boltzmann velocities
+
+Running: step 0 -> 10,000,000
+
+WARNING:root:Model is being compiled this might take a while for the first time
+W1029 14:50:45.433000 789999 /global/u1/d/dchrist2/.conda/envs/solvationnet/lib/python3.12/site-packages/torch/_logging/_internal.py:1345] [0/0] Profiler record function <class 'torch.autograd.profiler.record_function'> will be ignored
+/global/homes/d/dchrist2/.conda/envs/solvationnet/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:321: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+/global/homes/d/dchrist2/.conda/envs/solvationnet/lib/python3.12/site-packages/torch/_inductor/lowering.py:2352: FutureWarning: `torch._prims_common.check` is deprecated and will be removed in the future. Please use `torch._check*` functions instead.
+  check(
+  step=    10,000  t=0.010ns  T=306K  13.1st/s  ETA=211.1h
+  step=    20,000  t=0.020ns  T=286K  13.9st/s  ETA=199.9h

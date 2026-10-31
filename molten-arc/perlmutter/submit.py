@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Perlmutter batch submission for molten-arc molten salt simulations.
 
-Part of BACON — Battery Architectures via Computational Observation of Nonaqueous salts
+Part of BACON, Battery Architectures via Computational Observation of Nonaqueous salts
 
 Thin wrapper around tools/perlmutter/perlmutter.py with molten-salt defaults.
 Knows the salt systems, temperatures, and density estimates so you don't have
@@ -141,7 +141,7 @@ def cmd_pull(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="BACON — Perlmutter batch runner for molten-arc",
+        description="BACON, Perlmutter batch runner for molten-arc",
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     sub = parser.add_subparsers(dest="cmd")

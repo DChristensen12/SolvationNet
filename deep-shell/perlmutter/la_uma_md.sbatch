@@ -11,35 +11,27 @@
 #SBATCH --output=la_uma_md_%j.out
 #SBATCH --error=la_uma_md_%j.err
 
-# QOS stays `regular`. The gpu_* names that show up in `sacctmgr show assoc`
-# (gpu_regular, gpu_debug, ...) are internal: NERSC's submit filter derives them
-# from regular + --constraint=gpu. Asking for one by name is rejected with
-# "Job request does not match any supported policy".
+# Submit from $SCRATCH/SolvationNet/deep-shell/
 #
-# ACCOUNT / BUDGET, as of 2026-09-21. m4292_g has spent its GPU allocation
-# (15746 of 15746) and its association is down to overrun-class QOSes only.
-# m4292 shows ~30 node-hours left of 100, but those are CPU hours: a GPU job
-# submitted under m4292 still charges the GPU allocation, so it bounces with
-# "your balance is 0.00 node hours" exactly like m4292_g does. There is no GPU
-# time on this project by the normal route. Until the PI secures more, the only
-# thing that runs is the overrun queue on the spent repo:
+#   sbatch -A m4292 -q overrun --requeue -t 06:00:00 perlmutter/la_uma_md.sbatch
 #
-#   sbatch -A m4292_g -q overrun --requeue perlmutter/la_uma_md.sbatch
+# QOS stays regular. The gpu_* names in `sacctmgr show assoc` (gpu_regular,
+# gpu_debug) are internal, derived by NERSC's submit filter from regular plus
+# --constraint=gpu. Requesting one by name is rejected with "Job request does
+# not match any supported policy".
 #
-# Overrun costs nothing, runs at the lowest priority and gets preempted; the
-# --resume flag below plus 50 ps checkpoints are what make that survivable.
+# The m4292_g GPU allocation is spent, 15746 of 15746 node-hours as of
+# 2026-09-21. A GPU job charges that allocation whichever repo it names, so
+# normal submission bounces with "your balance is 0.00 node hours". The overrun
+# queue runs at zero charge instead, at lowest priority and preemptible. The
+# --resume flag below and 10,000 step checkpoints make that survivable.
 #
-# All five anion systems at once on four A100s, round-robin, so PO4 ends up
-# sharing GPU 0 with F. A 390-atom molecule barely dents an 80 GB card and
-# sharing one costs far less than leaving a system to never start at all.
+# Keep the walltime short. A 24 h request pended 17 days and never started,
+# while every 30 min job reached a node within hours. At 13.9 steps/s a 6 h job
+# covers 300,000 steps and loses at most 12 min to preemption.
 #
-# 10 ns at 1 fs is 10M UMA calls per system. That will not finish in a single
-# 24 h allocation, so resubmit this until all five say DONE. Everything
-# checkpoints and resumes. Running them concurrently is what keeps them
-# advancing together across resubmissions.
-#
-# Submit from $SCRATCH/solvationnet/deep-shell/:
-#   sbatch perlmutter/la_uma_md.sbatch
+# 10 ns at 1 fs is 10M UMA calls per system, about 200 GPU-hours measured on job
+# 60508816. Resubmit until all five systems report DONE.
 
 set -uo pipefail
 
@@ -57,7 +49,7 @@ p = pretrained_mlip.get_predict_unit('uma-s-1p2', device='cpu')
 assert hasattr(p.model, 'module')
 " || { echo "ERROR: cannot load uma-s-1p2 from cache with HF_HUB_OFFLINE=1"; exit 1; }
 
-WORK="${SLURM_SUBMIT_DIR:-$SCRATCH/solvationnet/deep-shell}"
+WORK="${SLURM_SUBMIT_DIR:-$SCRATCH/SolvationNet/deep-shell}"
 cd "$WORK" || exit 1
 
 echo "=== La³⁺ solvation MD ==="
@@ -77,11 +69,11 @@ for sys in "${ALL_SYSTEMS[@]}"; do
     mkdir -p "results/La3+_${sys}"
 done
 
-# One system per GPU, never two. Measured on job 60508816: a system with a GPU
-# to itself ran at 13.9 st/s (22k steps in 30 min), while F and PO4 sharing GPU
-# 0 managed ~5 st/s each (9k steps). Sharing does work -- it is not a failure --
-# but one card serving two systems yields ~10 st/s against 13.9 dedicated, so
-# four systems on four GPUs beats five on four: 55.6 st/s aggregate vs 51.7.
+# One system per GPU, never two. Measured on job 60508816, a system with a GPU
+# to itself ran at 13.9 steps/s, 22,000 steps in 30 min, while F and PO4 sharing
+# GPU 0 managed about 5 steps/s each. Sharing works, but one card serving two
+# systems gives about 10 steps/s against 13.9 dedicated, so four systems on four
+# GPUs beats five: 55.6 steps/s aggregate against 51.7.
 #
 # Five systems do not fit on four GPUs, so each job takes the NGPU systems that
 # are furthest behind. Resubmitting repeatedly advances all five evenly, because
@@ -99,7 +91,7 @@ while read -r _ sys; do
 done < <(printf '%s\n' "${PENDING[@]}" | sort -n | head -n "$NGPU")
 
 if [ "${#SYSTEMS[@]}" -eq 0 ]; then
-    echo "All systems report final.xyz -- nothing to run."
+    echo "All systems report final.xyz, nothing to run."
     exit 0
 fi
 echo "Least-advanced systems this pass: ${SYSTEMS[*]}"
@@ -153,7 +145,7 @@ for sys in "${ALL_SYSTEMS[@]}"; do
         echo "  La3+_${sys}:  DONE (final.xyz exists)"
     elif [ -f "$dir/checkpoint.pkl" ]; then
         step=$(tail -n 1 "$dir/md.log" 2>/dev/null | awk '{print $1}')
-        echo "  La3+_${sys}:  PARTIAL (last logged step: ${step:-unknown}) — resubmit to continue"
+        echo "  La3+_${sys}:  PARTIAL (last logged step: ${step:-unknown}), resubmit to continue"
         INCOMPLETE=$((INCOMPLETE + 1))
     else
         echo "  La3+_${sys}:  FAILED (no output; see $dir/slurm.log)"
@@ -163,15 +155,15 @@ done
 
 if [ "$INCOMPLETE" -gt 0 ]; then
     echo ""
-    echo "$INCOMPLETE system(s) incomplete — resubmit: sbatch perlmutter/la_uma_md.sbatch"
+    echo "$INCOMPLETE system(s) incomplete. Resubmit: sbatch perlmutter/la_uma_md.sbatch"
 fi
 
 echo ""
 echo "Finished: $(date)"
 
-# To benchmark rather than spend an allocation, submit this same script to the
-# debug queue -- 30 minutes on four GPUs is enough to clear torch.compile
-# warmup and print real st/s for all five systems:
+# To benchmark rather than spend an allocation, submit this script to the debug
+# queue. Thirty minutes on four GPUs clears torch.compile warmup and prints
+# throughput for every system:
 #   sbatch -q debug -t 00:30:00 perlmutter/la_uma_md.sbatch
 #   grep st/s results/La3+_*/slurm.log
 # Then GPU-hours per system = 10000000 / st/s / 3600.

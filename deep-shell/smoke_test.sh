@@ -1,7 +1,7 @@
 #!/bin/bash
-# Run the MD driver for a handful of steps on CPU before submitting anything to
-# Perlmutter. Catches what the queue takes days to tell you: a broken
-# calculator, a fairchem API change, a force call that throws.
+# Run the MD driver for a few steps on CPU before submitting to Perlmutter.
+# Catches a broken calculator, a fairchem API change, or a force call that
+# throws, any of which otherwise costs a queue cycle to discover.
 #
 #   bash deep-shell/smoke_test.sh [steps] [system]
 #
@@ -10,12 +10,11 @@
 #
 # The very first run has to populate the weight cache, so let it reach the hub:
 #   HF_HUB_OFFLINE=0 bash deep-shell/smoke_test.sh
-# Every run after that defaults to offline, which also proves the cache is
-# readable without the hub -- the failure mode that killed job 60059899.
+# Every run after that defaults to offline, which also confirms the cache is
+# readable without the hub. That was the failure mode on job 60059899.
 #
-# Two real bugs would have been caught here in under a minute rather than after
-# two queue cycles: rebinding predictor.model so fairchem lost .module, and
-# anything that breaks the first get_forces().
+# Rebinding predictor.model, which cost two queue cycles to find, would have
+# shown up here in under a minute.
 
 set -uo pipefail
 

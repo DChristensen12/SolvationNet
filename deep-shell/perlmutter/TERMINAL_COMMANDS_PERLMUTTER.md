@@ -115,5 +115,5 @@ sbatch -q debug -t 00:30:00 perlmutter/la_uma_md.sbatch
   Slurm rejects them with "Job request does not match any supported policy".
   Use `regular`, `debug`, or `overrun`.
 - `overrun` is free but runs at the lowest priority and gets preempted. The
-  script checkpoints every 50 ps and resumes, so that's survivable.
+  script checkpoints every 10 ps and resumes, so that is survivable.
 - `sbatch` returns right away. You can log out and the job keeps going.

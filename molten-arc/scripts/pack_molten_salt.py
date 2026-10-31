@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Packs molten salt ions into a cubic simulation cell with Packmol.
 
-Part of BACON — Battery Architectures via Computational Observation of Nonaqueous salts
+Part of BACON, Battery Architectures via Computational Observation of Nonaqueous salts
 
-Molten salts are pure ionic systems — no organic solvents. You specify
+Molten salts are pure ionic systems with no organic solvents. You specify
 the salt composition (mol fractions), a target density, and a box size,
 and this script figures out how many of each ion to pack.
 

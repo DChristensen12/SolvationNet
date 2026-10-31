@@ -477,7 +477,7 @@ def main():
               f"(1 La³⁺ + {n_anions} {key:<3s} + {N_WATER} H₂O)  {q:<8s}"
               f"  CN {cn[0]} @ {cn[1]:.2f} Å  min contact {contact:.2f} Å ({pair})")
 
-    print(f"\nDone — {len(ANIONS)} files in {os.path.abspath(args.output_dir)}")
+    print(f"\nDone, {len(ANIONS)} files in {os.path.abspath(args.output_dir)}")
 
 
 if __name__ == "__main__":

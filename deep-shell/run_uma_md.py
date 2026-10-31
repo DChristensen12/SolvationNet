@@ -37,12 +37,8 @@ def get_uma_calculator(device="cuda", compile_model=False):
     """Load FAIRChem UMA-s-1.2 (OMol25) with turbo inference settings."""
     from fairchem.core import FAIRChemCalculator, pretrained_mlip
 
-    # Ask fairchem for tf32 and no activation checkpointing through its own
-    # settings object. Our module-level set_float32_matmul_precision("high")
-    # does NOT reach the compiled graph -- torch._inductor warned "TensorFloat32
-    # tensor cores available but not enabled" on job 60508816, and
-    # InferenceSettings defaults tf32=False. Tensor cores are worth roughly 2x
-    # on matmul, against a measured 13.9 st/s (200 h/system).
+    # Request tf32 through fairchem's own settings
+    # set_float32_matmul_precision above never reaches the compiled graph
     settings = "default"
     try:
         from fairchem.core.units.mlip_unit.api.inference import InferenceSettings
@@ -58,11 +54,8 @@ def get_uma_calculator(device="cuda", compile_model=False):
         "uma-s-1p2", device=device, inference_settings=settings
     )
 
-    # fairchem keeps the real network one level down, at predictor.model.module,
-    # and reads that attribute itself at predict time. Rebinding predictor.model
-    # strips it and the first get_forces() dies with
-    #   AttributeError: 'function' object has no attribute 'module'
-    # so only ever touch the inner module, never predictor.model itself.
+    # fairchem reads self.model.module at predict time
+    # rebinding predictor.model strips that attribute and breaks get_forces
     net = getattr(predictor, "model", None)
     inner = getattr(net, "module", None) if net is not None else None
 
@@ -71,9 +64,8 @@ def get_uma_calculator(device="cuda", compile_model=False):
         if m is not None and hasattr(m, "use_checkpoint"):
             m.use_checkpoint = False
 
-    # Off by default, and measure before trusting it: the neighbour list changes
-    # size every step, so dynamo re-traces constantly and the recompiles can
-    # cost more than the fused kernels save.
+    # Off by default, the neighbour list changes size every step so dynamo
+    # re-traces constantly
     if compile_model:
         if inner is None:
             print("--compile ignored: no predictor.model.module to compile",
@@ -88,14 +80,10 @@ def get_uma_calculator(device="cuda", compile_model=False):
 
 
 def _trim_after_checkpoint(traj_path, log_path, start_step, traj_interval):
-    """Drop trajectory frames and log rows written past the resume point.
-
-    Checkpoints land every --ckpt-interval (50 ps) but the trajectory and log
-    are written every --traj-interval / --log-interval (1 ps), so a job killed
-    mid-interval leaves up to 49 ps of output beyond the step we resume from.
-    Appending after that duplicates the span and leaves the step column
-    non-monotonic. Overrun preempts often, so this would compound every cycle.
-    """
+    """Drop trajectory frames and log rows written past the resume point."""
+    # Checkpoints are sparser than the trajectory and log, so a killed job
+    # leaves output beyond the resume step. Appending after it would duplicate
+    # that span and leave the step column non-monotonic.
     if os.path.exists(log_path):
         with open(log_path) as f:
             lines = f.readlines()
@@ -124,7 +112,7 @@ def _trim_after_checkpoint(traj_path, log_path, start_step, traj_interval):
                 natoms = int(lines[i].strip())
             except ValueError:
                 break
-            i += 2 + natoms          # count line + comment line + atoms
+            i += 2 + natoms          # count line, comment line, atoms
             frames += 1
         if i < len(lines):
             with open(traj_path, "w") as f:
@@ -174,10 +162,8 @@ def run(args):
         if os.path.exists(traj_path):
             os.remove(traj_path)
 
-    # fixcm=False because FixCom is already on the atoms above. Langevin
-    # defaults fixcm=True, and ASE warns that its own implementation "does not
-    # strictly sample the correct NVT distributions" -- deprecated since 3.28 in
-    # favour of exactly the constraint we already use.
+    # fixcm=False since FixCom is already set above
+    # ASE deprecated Langevin's own version, it does not sample NVT correctly
     dyn = Langevin(
         atoms,
         timestep=args.dt * units.fs,

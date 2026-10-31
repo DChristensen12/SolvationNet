@@ -1,6 +1,6 @@
 """Molten salt electrolyte and synthesis systems for batteries.
 
-codename: BACON — Battery Architectures via Computational Observation of Nonaqueous salts
+codename: BACON , Battery Architectures via Computational Observation of Nonaqueous salts
 
 Curated from Liu et al., Materials Today 60 (2022) 128-157.
 Each entry carries the composition, working temperature, target application,
@@ -15,9 +15,7 @@ Usage
 """
 
 
-# ---------------------------------------------------------------------------
 # Molar masses of the salt species we care about (g/mol)
-# ---------------------------------------------------------------------------
 SALT_MOLAR_MASSES = {
     "LiCl":   42.394,
     "NaCl":   58.443,
@@ -44,11 +42,9 @@ SALT_MOLAR_MASSES = {
 }
 
 
-# ---------------------------------------------------------------------------
 # Approximate densities of select molten salts near their working temps (g/cm^3)
 # From Janz et al. NIST molten salt databases and other standard refs.
-# These are rough — real densities shift with temperature and mixing.
-# ---------------------------------------------------------------------------
+# Rough values, real densities shift with temperature and mixing
 MOLTEN_SALT_DENSITIES = {
     "LiCl":   1.502,   # at 700 °C
     "NaCl":   1.556,   # at 850 °C
@@ -68,9 +64,7 @@ MOLTEN_SALT_DENSITIES = {
 }
 
 
-# ---------------------------------------------------------------------------
 # Melting points (°C) of single-component salts
-# ---------------------------------------------------------------------------
 MELTING_POINTS = {
     "LiCl":   605,
     "NaCl":   801,
@@ -94,15 +88,12 @@ MELTING_POINTS = {
 }
 
 
-# ===================================================================
-#  ELECTROLYTE SYSTEMS (Table 3 from Liu et al. 2022)
-#  These are molten salts used *as electrolytes* in AIBs, LMBs, MABs
-# ===================================================================
+# Electrolyte systems, Table 3 of Liu et al. 2022
+# Molten salts used as electrolytes in AIBs, LMBs and MABs
 
 ELECTROLYTE_SYSTEMS = {
 
-    # ---- Aluminium-ion batteries (AIBs) ----
-
+    # Aluminium-ion batteries (AIBs)
     "NaAlCl4": {
         "description": "Binary AlCl3-NaCl electrolyte for aluminium-ion batteries",
         "application": "AIB",
@@ -135,8 +126,7 @@ ELECTROLYTE_SYSTEMS = {
         "ref": "Wang et al., Chem. Commun. 55 (2019) 2138",
     },
 
-    # ---- Liquid metal batteries (LMBs) ----
-
+    # Liquid metal batteries (LMBs)
     "LiCl-LiF": {
         "description": "Binary lithium chloride-fluoride for Li-based LMBs",
         "application": "LMB",
@@ -208,8 +198,7 @@ ELECTROLYTE_SYSTEMS = {
         "ref": "Li et al., J. Clean. Prod. 312 (2021) 127779",
     },
 
-    # ---- Molten-air batteries (MABs) ----
-
+    # Molten-air batteries (MABs)
     "Li2CO3-Na2CO3-K2CO3-LiOH": {
         "description": "Quaternary carbonate-hydroxide for iron molten-air batteries",
         "application": "MAB",
@@ -222,9 +211,7 @@ ELECTROLYTE_SYSTEMS = {
 }
 
 
-# ===================================================================
-#  SYNTHESIS SALTS — used as reaction media for electrode preparation
-# ===================================================================
+# SYNTHESIS SALTS, used as reaction media for electrode preparation
 
 SYNTHESIS_SALTS = {
 

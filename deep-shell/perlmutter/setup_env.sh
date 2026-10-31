@@ -18,7 +18,7 @@ echo ""
 module load conda 2>/dev/null || module load python 2>/dev/null
 
 if conda env list | grep -q "^${ENV} "; then
-    echo "Environment '$ENV' exists — updating..."
+    echo "Environment '$ENV' exists, updating..."
     conda activate "$ENV"
 else
     echo "Creating '$ENV'..."
@@ -42,7 +42,7 @@ echo "=== Done ==="
 echo ""
 echo "Activate:   conda activate $ENV"
 echo ""
-echo "IMPORTANT — UMA model weights are gated on HuggingFace."
+echo "IMPORTANT: UMA model weights are gated on HuggingFace."
 echo "Run once:   python -c \"from huggingface_hub import login; login()\""
 echo ""
 echo "Test:"
