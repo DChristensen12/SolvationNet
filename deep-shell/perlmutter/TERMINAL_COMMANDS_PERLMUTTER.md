@@ -1,119 +1,113 @@
 # Perlmutter Terminal Commands
 
-I run these in order after signing in to NERSC. One box = one command.
-
----
+We run these in order after signing in to NERSC. One box is one command.
 
 ## Run the job
 
-**1. Log in.** Use your own NERSC username. Password + OTP at the prompt.
+Log in with the NERSC username for the account, giving password and OTP at the
+prompt.
 
 ```bash
 ssh user@perlmutter.nersc.gov
 ```
 
-**2. Go to the working directory**
+Go to the working directory.
 
 ```bash
 cd $SCRATCH/SolvationNet/deep-shell
 ```
 
-**3. Get the latest script**
+Get the latest script.
 
 ```bash
 git pull
 ```
 
-**4. Submit**
+Submit.
 
 ```bash
 sbatch -A m4292 -q overrun --requeue perlmutter/la_uma_md.sbatch
 ```
 
-or alternatively
+The `m4292_g` allocation is spent, so the charged form of the same submission
+is kept here only for reference.
 
-```
+```bash
 # sbatch -A m4292_g -q overrun --requeue perlmutter/la_uma_md.sbatch
 ```
 
-If it worked you get a job ID back. If the output says `error:`, check Troubleshooting.
+A successful submission returns a job ID. Output beginning `error:` is covered
+under Troubleshooting.
 
-**5. Confirm it queued**
+Confirm it queued.
 
 ```bash
 squeue -u $USER
 ```
 
-A row means it took. An empty table means nothing is running.
-
----
+A row means the submission took. An empty table means nothing is running.
 
 ## Check on it
 
-**Speed and ETA per system**
+Speed and ETA per system.
 
 ```bash
 grep st/s results/La3+_*/slurm.log
 ```
 
-**Latest step, time, temperature, energy**
+Latest step, time, temperature, and energy.
 
 ```bash
 tail -n 1 results/La3+_*/md.log
 ```
 
-**Launcher output**
+Launcher output.
 
 ```bash
 cat la_uma_md_*.out
 ```
 
-**Are all five done?**
+Which of the five systems have finished.
 
 ```bash
 ls results/La3+_*/final.xyz
 ```
 
----
-
 ## Resubmit
 
-Jobs time out or get preempted. Resubmitting picks up from the last checkpoint.
-Run step 4 again as many times as it takes.
+Jobs time out or get preempted, and resubmitting picks up from the last
+checkpoint. The submission above can be repeated as many times as it takes.
 
 ```bash
 sbatch -A m4292 -q overrun --requeue perlmutter/la_uma_md.sbatch
 ```
 
----
-
 ## Troubleshooting
 
-**Check the allocation balance**
+Check the allocation balance.
 
 ```bash
 iris
 ```
 
-**`git pull` refuses because of local edits.** Drop the Perlmutter-side change, then pull again.
+When `git pull` refuses because of local edits, drop the Perlmutter-side change
+and pull again.
 
 ```bash
 git checkout -- perlmutter/la_uma_md.sbatch
 ```
 
-**30-minute test run instead of the full job**
+Run a 30 minute test instead of the full job.
 
 ```bash
 sbatch -q debug -t 00:30:00 perlmutter/la_uma_md.sbatch
 ```
 
----
-
 ## Notes
 
-- Don't use `-q gpu_regular` or `-q gpu_debug`. Those names are internal and
-  Slurm rejects them with "Job request does not match any supported policy".
-  Use `regular`, `debug`, or `overrun`.
+- `-q gpu_regular` and `-q gpu_debug` are internal names, and Slurm rejects them
+  with "Job request does not match any supported policy". The QOS names that
+  work are `regular`, `debug`, and `overrun`.
 - `overrun` is free but runs at the lowest priority and gets preempted. The
-  script checkpoints every 10 ps and resumes, so that is survivable.
-- `sbatch` returns right away. You can log out and the job keeps going.
+  script checkpoints every 10 ps and resumes, so preemption is survivable.
+- `sbatch` returns right away, and the job keeps going after logout.

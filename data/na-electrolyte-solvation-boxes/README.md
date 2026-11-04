@@ -15,7 +15,7 @@ pretty_name: Na-Ion Electrolyte Solvation Boxes
 
 # Na-Ion Electrolyte Solvation Boxes
 
-Periodic simulation boxes of sodium-ion battery electrolytes in extended XYZ format, equilibrated with machine-learned interatomic potentials (MLIPs). Covers 7 sodium salts, 21 solvents/cosolvents, and concentrations from dilute (0.1 M) through water-in-salt (21 M), including carbonate, ether, glyme, ionic liquid, phosphate, and aqueous systems.
+Periodic simulation boxes of sodium-ion battery electrolytes in extended XYZ format, equilibrated with machine-learned interatomic potentials (MLIPs). The set covers 8 sodium salts, 19 solvents and cosolvents, 3 ionic liquids, and concentrations from 0.4 M through water-in-salt at 21 M, including carbonate, ether, glyme, ionic liquid, phosphate, and aqueous systems.
 
 ## Subsets
 
@@ -23,14 +23,14 @@ Periodic simulation boxes of sodium-ion battery electrolytes in extended XYZ for
 |--------|-------|----------|-----------|--------|
 | `NVT_OrbMolV2/` | 79 | NVT Langevin (50 ps, 300 K) | OrbMol-v2 (Orbital Materials) | Complete |
 | `NVT_OrbMolV2/npt_extended/` | 4 | NVT (50 ps) then NPT (100 ps, 300 K, 1 atm) | OrbMol-v2 (Orbital Materials) | Complete |
-| `NPT_FAIRChem-UMA/` | 83 | NPT (300 K, 1 atm) | UMA-s-1.2 (FAIRChem/Meta) | In progress |
+| `NPT_FAIRChem-UMA/` | 5 of 83 | NPT (300 K, 1 atm) | UMA-s-1.2 (FAIRChem/Meta) | In progress |
 | `molecules/` | 32 | n/a | n/a | Input geometries |
 
 ### NVT_OrbMolV2
 
 > Initial configurations were packed with Packmol and geometry-optimized with the FIRE algorithm. Systems were then thermalized under NVT Langevin dynamics (50 ps, 300 K) using the OrbMol-v2 potential (Orbital Materials), trained on the OMol25 dataset.
 
-79 equilibrated boxes. NVT does not adjust box volume, so densities reflect the Packmol packing estimate, not the true equilibrium density.
+79 equilibrated boxes. NVT does not adjust box volume, so densities reflect the Packmol packing estimate, not the true equilibrium density. On the five compositions that have since finished NPT, that estimate sits 39% to 42% below the equilibrium density, equivalently NPT raises the density by 65% to 74%, so these boxes are thermalized but expanded. We recommend the NPT subsets for any property that depends on density, and recommend reading coordination numbers from these boxes with that caveat in mind.
 
 ### NVT_OrbMolV2/npt_extended
 
@@ -42,20 +42,22 @@ These boxes went through the full NVT then NPT pipeline with a single consistent
 
 > Initial configurations were packed with Packmol and geometry-optimized with the FIRE algorithm. Systems were then equilibrated under NPT at 300 K and 1 atm using the OMol25-trained UMA potential (FAIRChem).
 
-83 boxes (the same 79 compositions as the NVT set, plus 4 that failed NVT with OrbMol). These start from FIRE-optimized Packmol configurations directly (no prior NVT) and use NPT to simultaneously thermalize and relax the density. Still in progress, completed boxes get added as they finish.
+83 boxes are planned, covering the same 79 compositions as the NVT set plus 4 that failed NVT with OrbMol. Five have finished and are in the repository. These start from FIRE-optimized Packmol configurations directly, with no prior NVT, and use NPT to thermalize and relax the density at the same time. Completed boxes get added as they finish.
+
+Where a composition also has an OrbMol-v2 NPT box in `npt_extended/`, the two potentials agree to 7.9% on average over the four boxes in common, which we read as a check that neither is far wrong.
 
 ### molecules
 
 32 individual molecule PDB files (ions, solvents, ionic liquid components) used as Packmol inputs. Geometries were generated with RDKit ETKDG + MMFF94 optimization; CTFSI and TTE were corrected with xTB GFN2 optimization and verified against reference bond lengths.
 
-## Construction Pipeline
+## Construction pipeline
 
 1. 3D geometry construction in Avogadro with Universal Force Field (UFF) optimization, exported as PDB (xTB GFN2 correction applied to CTFSI and TTE)
 2. Packing with Packmol, 2.0 Å tolerance, cubic periodic box sized from the target concentration
 3. Geometry optimization with FIRE (200 steps) using the OrbMol potential
 4. Equilibration under NVT and/or NPT molecular dynamics with an MLIP (see subset descriptions)
 
-## Electrolyte Coverage
+## Electrolyte coverage
 
 ### Salts
 NaPF₆, NaClO₄, NaFSI, NaTFSI, NaOTf, NaBF₄, NaDFOB, NaCTFSI, KFSI
@@ -63,7 +65,7 @@ NaPF₆, NaClO₄, NaFSI, NaTFSI, NaOTf, NaBF₄, NaDFOB, NaCTFSI, KFSI
 ### Solvents
 DME, diglyme, triglyme, tetraglyme, EC, PC, DMC, DEC, EMC, FEC, TMP, TEP, BTFE, TTE, ethyl acetate, methyl propionate, EGDEE, CPME, water
 
-### Ionic Liquids
+### Ionic liquids
 Pyr13FSI, Pyr14TFSI, EMImFSI
 
 ### Categories
@@ -81,7 +83,7 @@ Pyr13FSI, Pyr14TFSI, EMImFSI
 - Cosolvent ratio series (EC:DEC from 1:9 to 9:1)
 - LHCE diluent series (varying BTFE content)
 
-## Contents: NVT_OrbMolV2 (79 boxes)
+## Contents of NVT_OrbMolV2
 
 | File | Electrolyte |
 |------|------------|
@@ -165,19 +167,19 @@ Pyr13FSI, Pyr14TFSI, EMImFSI
 | `NaTFSI_EC-DMC-1-1_1M.xyz` | 1 M NaTFSI in EC:DMC 1:1 |
 | `NaTFSI_PC_1M.xyz` | 1 M NaTFSI in PC |
 
-**Total: 79 boxes**
+The subset holds 79 boxes.
 
-## Naming Convention
+## Naming convention
 
-Files follow the pattern: `salt_solvent_concentration.xyz`
+Files follow the pattern `salt_solvent_concentration.xyz`.
 
-### Concentration Units
+### Concentration units
 
 - `M` is molar (mol/L of solution)
 - `0p5M` is 0.5 M, the letter `p` stands in for the decimal point
 - `r-1-2p25-3` is a molar ratio (salt:solvent:diluent), prefixed with `r`
 
-### Salt Abbreviations
+### Salt abbreviations
 
 | Abbreviation | Formula | Full Name |
 |---|---|---|
@@ -191,7 +193,7 @@ Files follow the pattern: `salt_solvent_concentration.xyz`
 | NaCTFSI | NaN(CN)(SO₂CF₃) | Sodium cyano(trifluoromethanesulfonyl)imide |
 | KFSI | KN(SO₂F)₂ | Potassium bis(fluorosulfonyl)imide |
 
-### Solvent Abbreviations
+### Solvent abbreviations
 
 | Abbreviation | Full Name |
 |---|---|
@@ -217,7 +219,7 @@ Files follow the pattern: `salt_solvent_concentration.xyz`
 | Pyr14TFSI | N-butyl-N-methylpyrrolidinium bis(trifluoromethanesulfonyl)imide |
 | EMImFSI | 1-Ethyl-3-methylimidazolium bis(fluorosulfonyl)imide |
 
-### Other Notation
+### Other notation
 
 | Notation | Meaning |
 |---|---|
@@ -229,8 +231,12 @@ Files follow the pattern: `salt_solvent_concentration.xyz`
 
 ## Citation
 
-If you use this dataset, please cite the OMol25 dataset and the respective MLIP models:
+We ask that work using these boxes cite the OMol25 dataset and the MLIP models used here:
 
 - OMol25: Levine et al., "The Open Molecules 2025 (OMol25) Dataset, Evaluations, and Models," 2025.
 - OrbMol-v2: Orbital Materials, [orb-models](https://github.com/orbital-materials/orb-models)
 - UMA: FAIRChem/Meta, [fairchem](https://github.com/FAIR-Chem/fairchem)
+
+## License
+
+CC BY 4.0.

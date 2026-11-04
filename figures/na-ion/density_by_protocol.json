@@ -1,0 +1,37 @@
+[
+  {
+    "name": "NaCTFSI-NaFSI_water_14p1M-31p5M",
+    "n_atoms": 838,
+    "packmol_nvt": 1.1968964413674397,
+    "orbmol_npt": 1.926440306211721,
+    "uma_npt": 2.0510452240881816
+  },
+  {
+    "name": "NaFSI-KFSI_DME_1M-0p05M",
+    "n_atoms": 3298,
+    "packmol_nvt": 0.6426469850932167,
+    "orbmol_npt": NaN,
+    "uma_npt": 1.1150603102677816
+  },
+  {
+    "name": "NaFSI_DME-TTE_r-1-2p25-3",
+    "n_atoms": 2000,
+    "packmol_nvt": 0.9337162845803051,
+    "orbmol_npt": 1.721159991719513,
+    "uma_npt": 1.552297500668203
+  },
+  {
+    "name": "NaTFSI_EC-DMC-1-1_1M",
+    "n_atoms": 3248,
+    "packmol_nvt": 0.8552440028922608,
+    "orbmol_npt": 1.5826691170373126,
+    "uma_npt": 1.4144335208070176
+  },
+  {
+    "name": "NaTFSI_PC_1M",
+    "n_atoms": 3388,
+    "packmol_nvt": 0.8612650767919924,
+    "orbmol_npt": 1.488621233680798,
+    "uma_npt": 1.4204670402224222
+  }
+]

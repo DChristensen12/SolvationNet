@@ -16,16 +16,45 @@ Published on Hugging Face as a single repository with multiple subsets. Covers 9
 
 | Subset | Boxes | What it is |
 |--------|-------|------------|
-| `NPT_FAIRChem-UMA/` | 83 | NPT equilibrated (300 K, 1 atm) with UMA-s-1.2 (FAIRChem/Meta). Density-validated. |
-| `NVT_OrbMolV2/` | 79 | NVT thermalized (50 ps, 300 K) with OrbMol-v2 (Orbital Materials). Fixed volume, no density adjustment. |
+| `NPT_FAIRChem-UMA/` | 5 of 83 | NPT equilibrated (300 K, 1 atm) with UMA-s-1.2 (FAIRChem/Meta). In progress, completed boxes are added as they finish. |
+| `NVT_OrbMolV2/` | 79 | NVT thermalized (50 ps, 300 K) with OrbMol-v2 (Orbital Materials). Fixed volume, so the density is the Packmol estimate. |
 | `NVT_OrbMolV2/npt_extended/` | 4 | Subset of NVT boxes further equilibrated with NPT using OrbMol-v2. |
 | `molecules/` | 32 | Individual molecule PDB files used as Packmol inputs. |
 
+On the five compositions that have finished NPT, the Packmol packing estimate used to size the NVT boxes sits 39% to 42% below the equilibrium density, so relaxing the cell under NPT raises the density by 65% to 74%. The NVT boxes are thermalized but not at a physical density, so structural quantities read from them carry that caveat. The two potentials agree with each other: UMA-s-1.2 and OrbMol-v2 NPT densities differ by 7.9% on average over the four boxes that have both. Reproduce with `python electrolyte_toolkit/plot_density_protocols.py`.
+
 See the [dataset README](data/na-electrolyte-solvation-boxes/README.md) for the full file list, naming convention, and abbreviation tables.
+
+## Dataset: Molten Salt Solvation Boxes
+
+Staged for release, not yet pushed. Five molten salt electrolytes equilibrated under NPT at 683 K to 973 K with MACE-MP small 0b2, plus the NVT runs, the packed cells, and the composition database drawn from Liu et al., *Materials Today* **60** (2022) 128.
+
+MACE-MP small falls 5.5% to 14.8% below an ideal additive molar volume estimate on all five melts. The sign is the same for every system, so we read it as a systematic underestimate by the potential rather than sampling noise. Reproduce with `python molten-arc/scripts/plot_npt_density.py`.
+
+See the [dataset card](data/molten_salts_solvation_boxes/README.md) for the per-system table and the caveats on the reference.
+
+## Dataset: Lanthanide Hydration Droplets
+
+Staged for release, not yet pushed. Five seeded La³⁺ droplet structures, each one La³⁺ plus counter-anions and 128 H₂O, built with the first shell as a tricapped trigonal prism at coordination number 9. These are starting structures only. Trajectories follow once the 10 ns Perlmutter campaign finishes.
+
+See the [dataset card](data/La3+_Droplets/README.md) for compositions, charges, and the construction protocol.
+
+## Publishing the datasets
+
+`tools/hf_upload.py` declares each dataset as a repo id, a card, and a file manifest. It is a dry run unless you pass `--push`, it confirms each upload, and it refuses hidden paths. Pushing never creates a repo, so a mistyped or renamed id stops the script instead of making a second one. Creating is `--create`, which makes the repo private unless `--public` is also given.
+
+```bash
+python tools/hf_upload.py molten-salt            # print the manifest, upload nothing
+python tools/hf_upload.py molten-salt --push     # upload to an existing repo
+python tools/hf_upload.py molten-salt --push --create   # first release, private
+python tools/hf_upload.py --all                  # dry run every dataset
+```
 
 ## Deep-Shell
 
 Will contain the scripts for lanthanide and actinide chemistry. I am using perlmutter (a supercomputer) for many of these calculations, however you can still run it via google colab or via any GPU you have access to (CPU works too, but would take much longer to run).
+
+The first successful Perlmutter run (job 60508816) measured 13.9 steps/s with one droplet per A100, which puts 10 ns on all five systems at roughly 250 node-hours. Reproduce the figure with `python deep-shell/plot_benchmark.py`. See [data/La3+_MD_benchmark/README.md](data/La3+_MD_benchmark/README.md) for why those trajectories are a throughput record rather than production data.
 
 ## Electrolyte Molecular Dynamics Toolkit
 

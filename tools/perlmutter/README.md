@@ -1,51 +1,51 @@
-# Perlmutter Tools
+# Perlmutter tools
 
-Batch-run SolvationNet scripts on [NERSC Perlmutter](https://docs.nersc.gov/systems/perlmutter/) via SLURM job arrays with campaign-level tracking, auto-retry, and pipeline chaining.
+We batch-run SolvationNet scripts on [NERSC Perlmutter](https://docs.nersc.gov/systems/perlmutter/) as SLURM job arrays, with campaign-level tracking, auto-retry, and pipeline chaining.
 
 ## Why this exists
 
-You already know how to SSH into Perlmutter and write sbatch scripts. This tool handles the parts that are tedious to do manually when you're running 80+ electrolyte boxes:
+Submitting and tracking 83 electrolyte boxes by hand is the part of a Perlmutter campaign that does not scale. This tool covers five pieces of it:
 
-- **Batch submission**: one command submits all your boxes as a SLURM job array
-- **Campaign tracking**: persistent state that remembers which boxes are done, failed, or still running, even across terminal sessions
-- **Auto-retry**: detects OOM, timeout, and NaN failures; resubmits only the failures from their last checkpoint
-- **Pipeline chaining**: equilibrate → run_md → analyze as a single command with SLURM dependency chains
-- **Result aggregation**: downloads completed results into the correct local directory structure
+- Batch submission: one command submits every box as a SLURM job array
+- Campaign tracking: persistent state recording which boxes are done, failed, or still running, across terminal sessions
+- Auto-retry: OOM, timeout, and NaN failures are classified, and only the failures are resubmitted, from their last checkpoint
+- Pipeline chaining: equilibrate, then run_md, then analyze in one command through SLURM dependency chains
+- Result aggregation: finished results are downloaded into the local directory layout the repo expects
 
 ## Prerequisites
 
-1. A **NERSC account** with an active compute allocation (e.g. `m1234`)
-2. **SSH keys** set up via [sshproxy.sh](https://docs.nersc.gov/connect/mfa/). Run it every 24 hours to refresh your SSH certificate:
+1. A NERSC account with an active compute allocation, for example `m1234`
+2. SSH keys set up through [sshproxy.sh](https://docs.nersc.gov/connect/mfa/), re-run every 24 hours to refresh the certificate:
    ```bash
    ./sshproxy.sh -u your_username
    ```
-3. **Python 3.10+** on your local machine (no extra pip packages needed, the tool uses only the standard library)
-4. **rsync** on your local machine (pre-installed on macOS and Linux)
+3. Python 3.10 or later locally, with no extra pip packages, since the tool uses only the standard library
+4. rsync locally, which ships with macOS and Linux
 
 ## Quickstart
 
 From the repo root:
 
 ```bash
-# 1. One-time: configure your NERSC credentials
+# Configure NERSC credentials, one time
 python tools/perlmutter/perlmutter.py setup
 
-# 2. One-time: push code and create the conda env on Perlmutter
+# Push code and create the conda env on Perlmutter, one time
 python tools/perlmutter/perlmutter.py sync --install
 
-# 3. Submit all 83 boxes for NPT equilibration with UMA
+# Submit all 83 boxes for NPT equilibration with UMA
 python tools/perlmutter/perlmutter.py campaign create ds3_uma_npt \
     --workflow equilibrate \
     --inputs "data/DS3_TO_RUN/*.xyz" \
     --args "--model uma --workflow npt --npt-steps 100000"
 
-# 4. Check progress (run any time, even days later)
+# Check progress, at any point, including days later
 python tools/perlmutter/perlmutter.py campaign status ds3_uma_npt
 
-# 5. Retry any OOM/timeout failures
+# Retry the OOM and timeout failures
 python tools/perlmutter/perlmutter.py campaign retry ds3_uma_npt
 
-# 6. Download completed results
+# Download finished results
 python tools/perlmutter/perlmutter.py pull ds3_uma_npt
 ```
 
@@ -53,28 +53,28 @@ python tools/perlmutter/perlmutter.py pull ds3_uma_npt
 
 ### `setup`
 
-Interactive prompt for your NERSC username, allocation code, and conda env name. Tests SSH connectivity, detects your `$SCRATCH` path, and creates the remote workspace directory.
+Prompts for the NERSC username, allocation code, and conda env name, then tests SSH connectivity, detects the `$SCRATCH` path, and creates the remote workspace directory.
 
 ```bash
 python tools/perlmutter/perlmutter.py setup
 ```
 
-This saves your config to `.perlmutter.json` at the repo root (gitignored, no credentials are committed).
+The config is written to `.perlmutter.json` at the repo root, which is gitignored, so no credentials are committed.
 
 ### `sync`
 
-Pushes the latest `electrolyte_toolkit/` and `deep-shell/` code to Perlmutter using rsync (single SSH connection, delta transfer, much faster than copying files one by one).
+Pushes the latest `electrolyte_toolkit/` and `deep-shell/` code to Perlmutter with rsync, which opens a single SSH connection and transfers only the deltas.
 
 ```bash
 python tools/perlmutter/perlmutter.py sync            # push code only
 python tools/perlmutter/perlmutter.py sync --install   # also create/update the conda env
 ```
 
-Run `sync` any time you modify the toolkit scripts locally. The `--install` flag runs `setup_env.sh` on Perlmutter to create a conda environment with PyTorch (CUDA), ASE, orb-models, fairchem-core, and mace-torch.
+Run `sync` after any local change to the toolkit scripts. The `--install` flag runs `setup_env.sh` on Perlmutter to create a conda environment with PyTorch (CUDA), ASE, orb-models, fairchem-core, and mace-torch.
 
 ## Campaigns
 
-A **campaign** is a named batch run. The tool tracks every input file, its SLURM job ID, and its status (pending, submitted, running, done, failed, oom, timeout, nan). Campaign state lives in `.perlmutter_campaigns.json` (gitignored) and persists across terminal sessions.
+A campaign is a named batch run. The tool tracks every input file, its SLURM job ID, and its status (pending, submitted, running, done, failed, oom, timeout, nan). Campaign state lives in `.perlmutter_campaigns.json` (gitignored) and persists across terminal sessions.
 
 ### `campaign create`
 
@@ -103,7 +103,7 @@ python tools/perlmutter/perlmutter.py campaign create <name> \
 | `--max-concurrent` | `16` | Max simultaneous array tasks (the `%` throttle on `--array`) |
 | `--dry-run` | off | Show what would be submitted without actually submitting |
 
-**Examples:**
+Examples:
 
 ```bash
 # Equilibrate with UMA, NPT-only
@@ -172,7 +172,7 @@ python tools/perlmutter/perlmutter.py campaign retry <name> \
     [--dry-run]
 ```
 
-The retried tasks automatically resume from their last checkpoint (the sbatch template detects existing checkpoints and passes `--resume` to `equilibrate.py`). You can increase the wall time for tasks that timed out:
+Retried tasks resume from their last checkpoint, since the sbatch template detects an existing checkpoint and passes `--resume` to `equilibrate.py`. Wall time can be raised for the tasks that timed out:
 
 ```bash
 # Retry with more time
@@ -207,7 +207,7 @@ python tools/perlmutter/perlmutter.py campaign pipeline <name> \
     [--dry-run]
 ```
 
-**Example:** Full pipeline from equilibration through analysis:
+Example, the full pipeline from equilibration through analysis:
 
 ```bash
 python tools/perlmutter/perlmutter.py campaign pipeline ds3_full \
@@ -219,13 +219,13 @@ python tools/perlmutter/perlmutter.py campaign pipeline ds3_full \
     --time 06:00:00
 ```
 
-This submits three chained SLURM job arrays. Each box flows through equilibrate → run_md → analyze independently. If equilibration fails for one box, its downstream steps are automatically skipped.
+This submits three chained SLURM job arrays. Each box flows through equilibrate, run_md, and analyze independently. If equilibration fails for one box, its downstream steps are skipped.
 
-## Retrieving Results
+## Retrieving results
 
 ### `pull`
 
-Downloads completed results from a campaign to your local machine.
+Downloads finished results from a campaign to the local machine.
 
 ```bash
 python tools/perlmutter/perlmutter.py pull <campaign> \
@@ -234,7 +234,7 @@ python tools/perlmutter/perlmutter.py pull <campaign> \
     [--force]
 ```
 
-If you don't specify `-o`, the output directory is auto-derived from the campaign's workflow and model to match the existing data layout:
+Without `-o`, the output directory is derived from the campaign's workflow and model to match the existing data layout:
 
 | Workflow + Model | Local output directory |
 |---|---|
@@ -281,7 +281,7 @@ python tools/perlmutter/perlmutter.py checkpoints              # all boxes
 python tools/perlmutter/perlmutter.py checkpoints ds3_uma_npt  # one campaign
 ```
 
-## Utility Commands
+## Utility commands
 
 ### `ssh`
 
@@ -305,7 +305,7 @@ python tools/perlmutter/perlmutter.py ls campaigns/ds3_uma_npt/  # campaign logs
 
 Paths are relative to `$SCRATCH/solvationnet/`.
 
-## Remote Directory Layout
+## Remote directory layout
 
 Everything lives under `$SCRATCH/solvationnet/` on Perlmutter:
 
@@ -336,18 +336,18 @@ $SCRATCH/solvationnet/
 
 Checkpoints are stored on `$SCRATCH` (Lustre parallel filesystem, high quota) rather than `$HOME` (NFS, 40 GB quota). The templates override `equilibrate.py`'s default `~/electrolyte_equilibration` to `$SCRATCH/solvationnet/checkpoints/`.
 
-## How SLURM Job Arrays Work
+## How SLURM job arrays work
 
-When you create a campaign with 83 inputs, the tool:
+Creating a campaign with 83 inputs works as follows:
 
-1. Writes a **manifest** file listing one input filename per line
-2. Generates an **sbatch script** with `#SBATCH --array=1-83%16` (83 tasks, max 16 running at once)
+1. A manifest file is written, listing one input filename per line
+2. An sbatch script is generated with `#SBATCH --array=1-83%16` (83 tasks, max 16 running at once)
 3. Each task reads its input from the manifest: `sed -n "${SLURM_ARRAY_TASK_ID}p" manifest.txt`
 4. The `%16` throttle prevents queue-hogging and allows early failure detection
 
-This is one SLURM submission, not 83 individual `sbatch` calls. The scheduler handles it much more efficiently, and you get a single job ID to track.
+This is one SLURM submission rather than 83 individual `sbatch` calls. The scheduler handles it more efficiently, and it leaves a single job ID to track.
 
-## Failure Handling
+## Failure handling
 
 The tool classifies failures by type and handles each appropriately:
 
@@ -359,15 +359,15 @@ The tool classifies failures by type and handles each appropriately:
 | `failed` | Other nonzero exit | Yes | Resumes from last checkpoint |
 | `nan` | NaN in final positions (exit 42) | No | Skipped (physics problem, not resource problem) |
 
-**NaN detection:** The sbatch template runs a Python post-check after `equilibrate.py` finishes. If the final structure contains NaN positions, the task exits with code 42. The campaign tracker marks this as `nan` and excludes it from auto-retry because retrying from the same checkpoint will hit the same NaN. These need manual investigation (try a different model, check the input geometry, etc.).
+NaN failures are detected by a Python post-check that the sbatch template runs after `equilibrate.py` finishes. If the final structure contains NaN positions, the task exits with code 42. The campaign tracker marks this as `nan` and excludes it from auto-retry because retrying from the same checkpoint will hit the same NaN. These need manual investigation (try a different model, check the input geometry, etc.).
 
-**Checkpoint-aware resume:** When a task is retried, the sbatch template checks whether a checkpoint directory already exists. If so, it passes `--resume BOX_NAME` to `equilibrate.py` instead of starting fresh. This means OOM and timeout retries pick up exactly where they left off, no wasted compute.
+Resume is checkpoint-aware. When a task is retried, the sbatch template checks whether a checkpoint directory already exists, and if it does, passes `--resume BOX_NAME` to `equilibrate.py` instead of starting fresh. OOM and timeout retries therefore pick up where they left off, with no repeated compute.
 
-## Best Practices
+## Best practices
 
 ### Start small
 
-Test with 2-3 boxes on the debug queue before submitting 83:
+We test with two or three boxes on the debug queue before submitting 83:
 
 ```bash
 python tools/perlmutter/perlmutter.py campaign create test_2boxes \
@@ -391,15 +391,15 @@ python tools/perlmutter/perlmutter.py campaign create ds3_check \
 
 ### Sync before submitting
 
-Always push the latest code before creating a campaign. If you fix a bug in `equilibrate.py`, that fix won't reach Perlmutter until you sync:
+The latest code has to be pushed before a campaign is created. A bug fixed locally in `equilibrate.py` does not reach Perlmutter until the next sync:
 
 ```bash
 python tools/perlmutter/perlmutter.py sync
 ```
 
-### Refresh your SSH keys
+### Refreshing SSH keys
 
-NERSC SSH certificates expire after 24 hours. If you get SSH errors, re-run `sshproxy.sh`:
+NERSC SSH certificates expire after 24 hours, so an SSH error usually means the certificate needs refreshing:
 
 ```bash
 ./sshproxy.sh -u your_username
@@ -407,7 +407,7 @@ NERSC SSH certificates expire after 24 hours. If you get SSH errors, re-run `ssh
 
 ### Wall time guidelines
 
-Equilibration time depends heavily on system size (atom count) and step count. Rough guidelines for a single A100:
+Equilibration time depends on system size (atom count) and step count. Rough guidelines for a single A100:
 
 | Atoms | 50k steps | 100k steps |
 |-------|-----------|------------|
@@ -416,15 +416,15 @@ Equilibration time depends heavily on system size (atom count) and step count. R
 | ~2000 | ~2-3 hr | ~4-6 hr |
 | ~5000+ | ~6-8 hr | ~12+ hr |
 
-Start with `--time 04:00:00` for most boxes. If jobs time out, retry with `--time 08:00:00`, checkpoints mean you don't lose progress.
+`--time 04:00:00` suits most boxes. A job that times out can be retried with `--time 08:00:00`, and checkpoints mean no progress is lost.
 
 ### Keep `--max-concurrent` reasonable
 
-The default of 16 is a good balance. Going higher (e.g., 64) will drain your allocation faster and may affect your fair-share priority on Perlmutter. Going lower (e.g., 4) is fine if you want to be conservative or are sharing the allocation with others.
+The default of 16 balances throughput against allocation burn. A higher value, for example 64, drains the allocation faster and may lower fair-share priority on Perlmutter. A lower value, for example 4, is appropriate when the allocation is shared with others.
 
 ### Naming campaigns
 
-Use descriptive names that encode the key parameters:
+We use names that encode the key parameters:
 
 ```
 ds3_uma_npt           # Dataset 3, UMA model, NPT workflow
@@ -433,7 +433,7 @@ la_metad_oh           # Lanthanum metadynamics, OH system
 test_3boxes_debug     # Test run
 ```
 
-## File Reference
+## File reference
 
 | File | Purpose |
 |------|---------|
@@ -445,27 +445,27 @@ test_3boxes_debug     # Test run
 | `templates/analyze_array.sbatch` | SLURM job array template for batch trajectory analysis (CPU-only) |
 | `templates/metadynamics.sbatch` | Single-job template for metadynamics |
 
-## Local Config Files (gitignored)
+## Local config files (gitignored)
 
 | File | Created by | Contents |
 |------|-----------|----------|
 | `.perlmutter.json` | `setup` | NERSC username, project code, scratch path, conda env name |
 | `.perlmutter_campaigns.json` | `campaign create` | Campaign state: tasks, job IDs, statuses |
 
-These live at the repo root and are gitignored. Each user runs `setup` to create their own. No `.env` file is needed.
+Both live at the repo root and are gitignored. Each user runs `setup` to create their own, and no `.env` file is needed.
 
 ## Troubleshooting
 
-**"Not configured. Run: perlmutter.py setup"**, You haven't run `setup` yet, or the `.perlmutter.json` file was deleted. Run `setup` again.
+`Not configured. Run: perlmutter.py setup` means `setup` has not been run, or `.perlmutter.json` was deleted. Run `setup` again.
 
-**SSH errors**: your sshproxy certificate probably expired. Re-run `sshproxy.sh -u your_username` and try again.
+An SSH error usually means the sshproxy certificate expired. Re-run `sshproxy.sh -u your_username` and submit again.
 
-**"No files match: ..."**, The glob pattern didn't find any files. Make sure you're running from the repo root and the path is correct. Wrap globs in quotes so your shell doesn't expand them before Python sees them.
+`No files match: ...` means the glob pattern found nothing. The command has to run from the repo root, and globs have to be quoted so the shell does not expand them before Python sees them.
 
-**All tasks show "submitted" but nothing is running**, The SLURM queue may be full. Run `perlmutter.py ssh "squeue -u $USER"` to check. Jobs in the `PD` (pending) state are waiting for resources.
+All tasks sitting at "submitted" with nothing running points at a full SLURM queue. `perlmutter.py ssh "squeue -u $USER"` shows the queue, and jobs in the `PD` state are waiting for resources.
 
-**Many OOM failures**, The system may be too large for a single A100's 80 GB. Try reducing `--npt-steps` to get a shorter run, or contact the group about multi-GPU strategies.
+Repeated OOM failures mean the system is too large for a single A100's 80 GB. Reducing `--npt-steps` gives a shorter run, and larger boxes need a multi-GPU strategy.
 
-**NaN failures**, The ML potential produced unstable forces. Common causes: bad initial geometry (atoms too close), unsupported chemistry for the chosen model, or insufficient equilibration before NPT. Try a different `--model`, or inspect the input box in the 3D viewer for clashes.
+NaN failures mean the MLIP produced unstable forces. The common causes are a bad initial geometry with atoms too close, chemistry the chosen model does not cover, or too little equilibration before NPT. A different `--model`, or an inspection of the input box for clashes, is the place to start.
 
-**Campaign state seems stale**, `campaign status` refreshes from SLURM each time you run it. If a job finished between your last status check and now, just run status again.
+Campaign state that looks stale is not. `campaign status` refreshes from SLURM on every call, so a job that finished since the last check shows up on the next one.

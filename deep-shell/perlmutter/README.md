@@ -5,48 +5,51 @@ FAIRChem UMA-s-1.2 (OMol25 task head) on NERSC Perlmutter A100 GPUs.
 
 ## Systems
 
-| File | Composition | Atoms | Net Charge | Spin |
+| File | Composition | Atoms | Net charge | Spin |
 |------|-------------|-------|------------|------|
 | La3+_F_droplet.xyz | 1 La³⁺ + 3 F⁻ + 128 H₂O | 388 | 0 | 1 (singlet) |
 | La3+_OH_droplet.xyz | 1 La³⁺ + 3 OH⁻ + 128 H₂O | 391 | 0 | 1 |
 | La3+_NO3_droplet.xyz | 1 La³⁺ + 3 NO₃⁻ + 128 H₂O | 397 | 0 | 1 |
-| La3+_CO3_droplet.xyz | 1 La³⁺ + 2 CO₃²⁻ + 128 H₂O | 393 | **−1** | 1 |
+| La3+_CO3_droplet.xyz | 1 La³⁺ + 2 CO₃²⁻ + 128 H₂O | 393 | −1 | 1 |
 | La3+_PO4_droplet.xyz | 1 La³⁺ + 1 PO₄³⁻ + 128 H₂O | 390 | 0 | 1 |
 
-La³⁺ is [Xe]4f⁰, closed-shell, no unpaired electrons; F⁻, OH⁻, NO₃⁻,
-CO₃²⁻ and PO₄³⁻ are all closed-shell too, so every system is a singlet
-(multiplicity 1). `charge` and `spin` in `atoms.info` are read by the
-FAIRChem omol task head.
+La³⁺ is [Xe]4f⁰ and closed shell, and F⁻, OH⁻, NO₃⁻, CO₃²⁻ and PO₄³⁻ are
+closed shell as well, so every system is a singlet (multiplicity 1). The
+`charge` and `spin` keys in `atoms.info` are read by the FAIRChem omol task
+head.
 
-**CO₃ is not neutral.** 3+ cannot be balanced by an integer number of
-divalent anions, so this system carries a net −1 and its electrostatics
-are not strictly comparable to the other four. The clean fix is
-2 La³⁺ + 3 CO₃²⁻, i.e. step 2 of the scale-up plan.
+The carbonate system is not charge neutral. A 3+ cation cannot be balanced by
+an integer number of divalent anions, so this droplet carries a net −1 and its
+electrostatics are not strictly comparable to the other four. A neutral
+alternative is 2 La³⁺ + 3 CO₃²⁻, which we plan as a later system.
 
 ### Starting structures
 
-The La³⁺ first shell is seeded as a **tricapped trigonal prism, CN = 9**,
-with anions on the capping sites and water on the remaining vertices, mean La–X of 2.48–2.55 Å against an experimental 2.54–2.56 Å
-(Persson et al., *Chem. Eur. J.* **2008**, 14, 3056; D'Angelo et al.,
-*Inorg. Chem.* **2011**, 50, 4572). First-shell water dipoles point away
-from the cation (La···H ≥ 3.2 Å). Bulk water fills a ~9.5 Å sphere at
-0.93–1.07× bulk density, and no intermolecular contact is shorter than
-2.17 Å, so the droplets run at 1 fs without a minimization pass.
+The La³⁺ first shell is seeded as a tricapped trigonal prism with coordination
+number 9, with anions on the capping sites and water on the remaining vertices.
+Mean La–X distances are 2.48 to 2.55 Å, against an experimental 2.54 to 2.56 Å
+(Persson et al., *Chem. Eur. J.* **14**, 3056 (2008); D'Angelo et al.,
+*Inorg. Chem.* **50**, 4572 (2011)). First-shell water dipoles point away from
+the cation, with La···H of at least 3.2 Å. Bulk water fills a sphere of radius
+about 9.5 Å at 0.93 to 1.07 times bulk density, and no intermolecular contact
+is shorter than 2.17 Å, so the droplets run at a 1 fs timestep without a
+minimization pass.
 
 Relaxation out of the seeded geometry is not small. A 150 step test on CPU
 released about 28 eV of potential energy and reached 623 K before the
 thermostat recovered it. Temperatures measured on GPU had settled to 259 to
 306 K by 10 to 20 ps. The structure takes longer.
 
-Rebuild them with:
+Rebuild the structures with:
 
 ```bash
 python build_droplet.py -o droplets/
 ```
 
-Anions start **inner-sphere and monodentate**. Nitrate and carbonate are
-usually bidentate on La³⁺ in the solid state, so expect the first tens of
-ps of each trajectory to be a re-coordination transient, not equilibrium.
+Anions start inner-sphere and monodentate. Nitrate and carbonate are usually
+bidentate on La³⁺ in the solid state, so we expect the first tens of
+picoseconds of each trajectory to be a re-coordination transient rather than
+equilibrium.
 
 ## Quick start
 
@@ -109,7 +112,7 @@ scp -r user@perlmutter.nersc.gov:\$SCRATCH/SolvationNet/deep-shell/results/ .
 | Duration | 10 ns | 10,000,000 steps |
 | Trajectory | every 1 ps | ~10,000 frames |
 | Checkpoints | every 10 ps | Resume-safe on timeout or preemption |
-| Hardware | 1 node, 4× A100-40GB | 4 systems per pass, one per GPU |
+| Hardware | 1 node, 4 A100-40GB cards | 4 systems per pass, one per GPU |
 | Wall time | 6 hours or less | Long requests do not schedule on overrun, see below |
 | Account and QOS | m4292, overrun | Zero charge, lowest priority, preemptible |
 
@@ -129,7 +132,7 @@ fairchem, which reads `self.model.module` at predict time.
 ## Runtime expectations
 
 10 ns at a 1 fs timestep is 10,000,000 UMA force calls per system. We measured
-**13.9 steps/s** on job 60508816 with one system per GPU, which is 200 GPU-hours
+13.9 steps/s on job 60508816 with one system per GPU, which is 200 GPU-hours
 per system, or about 250 node-hours for all five systems run four at a time.
 That measurement predates the TF32 fix, so treat it as a floor.
 
@@ -137,8 +140,8 @@ A system sharing a GPU ran at about 5 steps/s against 13.9 dedicated, so four
 systems on four GPUs beats five. Each pass takes the four least advanced
 systems, and resubmitting advances all five evenly.
 
-Keep walltime requests short. A 24 hour request pended for 17 days and never
-started, while every 30 minute job reached a node within hours. At 13.9 steps/s
+Walltime requests should stay short. A 24 hour request pended for 17 days and
+never started, while every 30 minute job reached a node within hours. At 13.9 steps/s
 a 6 hour job covers about 300,000 steps.
 
 Benchmark a change before committing queue time:
@@ -157,7 +160,7 @@ For a code change, test on CPU first and skip the queue entirely:
 bash deep-shell/smoke_test.sh
 ```
 
-If 10 ns proves out of reach, the honest options are a shorter target
+If 10 ns proves out of reach, the options are a shorter target
 (2 to 5 ns is still well past the 100 ps ligand-exchange timescale) or a
 larger timestep with constrained H (rigid water), not a silently truncated
 run.
