@@ -11,6 +11,7 @@ Supports multiple workflows and potentials:
   Potentials:
     orbmol_v2   OrbMol-v2 (Orbital Materials), trained on OMol25
     uma         UMA-s-1.2 (FAIRChem/Meta), trained on OMol25
+    uma_nitro   UMA-S-1.2.1-FT-D4rev (Nitro), fine-tuned on OMol-D4rev (~10x faster)
 
 Checkpoints are saved to a local folder. Only the latest checkpoint per
 box is kept. If interrupted, rerun the same command to resume automatically.
@@ -31,6 +32,9 @@ python equilibrate.py my_box.xyz --model orbmol_v2 --workflow nvt+npt
 
 # NVT only with OrbMol-v2
 python equilibrate.py my_box.xyz --model orbmol_v2 --workflow nvt
+
+# NPT with Nitro D4rev (~10x faster than UMA)
+python equilibrate.py my_box.xyz --model uma_nitro --workflow npt
 
 # Custom steps
 python equilibrate.py my_box.xyz --model uma --workflow npt --npt-steps 50000
@@ -391,7 +395,7 @@ def main():
                         help=f"Checkpoint directory (default: {DEFAULT_CHECKPOINT_DIR})")
     parser.add_argument("--device", default="cuda", choices=["cuda", "cpu"])
     parser.add_argument("--model", default="uma",
-                        choices=["orbmol_v2", "uma"],
+                        choices=["orbmol_v2", "uma", "uma_nitro"],
                         help="ML potential (default: uma)")
     parser.add_argument("--workflow", default="npt",
                         choices=["npt", "nvt", "nvt+npt"],

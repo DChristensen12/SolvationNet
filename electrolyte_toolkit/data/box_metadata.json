@@ -1,0 +1,792 @@
+[
+  {
+    "filename": "NaBF4-NaPF6_EC-PC-1-1_0p5M-0p5M.xyz",
+    "name": "NaBF4-NaPF6_EC-PC-1-1_0p5M-0p5M",
+    "n_atoms": 3174,
+    "box_a": 37.799999,
+    "box_b": 37.799999,
+    "box_c": 37.799999,
+    "volume_ang3": 54010.15,
+    "concentration_M": 0.5
+  },
+  {
+    "filename": "NaBF4_tetraglyme-TEP-3-7_1M.xyz",
+    "name": "NaBF4_tetraglyme-TEP-3-7_1M",
+    "n_atoms": 3110,
+    "box_a": 37.009998,
+    "box_b": 37.009998,
+    "box_c": 37.009998,
+    "volume_ang3": 50694.07,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaCTFSI-NaFSI_water_14p1M-31p5M.xyz",
+    "name": "NaCTFSI-NaFSI_water_14p1M-31p5M",
+    "n_atoms": 838,
+    "box_a": 26.47,
+    "box_b": 26.47,
+    "box_c": 26.47,
+    "volume_ang3": 18546.49,
+    "concentration_M": 14.1
+  },
+  {
+    "filename": "NaClO4_DME_1M-r2.xyz",
+    "name": "NaClO4_DME_1M-r2",
+    "n_atoms": 3208,
+    "box_a": 37.73,
+    "box_b": 37.73,
+    "box_c": 37.73,
+    "volume_ang3": 53710.65,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaClO4_DME_1M.xyz",
+    "name": "NaClO4_DME_1M",
+    "n_atoms": 3208,
+    "box_a": 37.73,
+    "box_b": 37.73,
+    "box_c": 37.73,
+    "volume_ang3": 53710.65,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaClO4_EC-DEC-1-1_1M.xyz",
+    "name": "NaClO4_EC-DEC-1-1_1M",
+    "n_atoms": 3114,
+    "box_a": 37.740002,
+    "box_b": 37.740002,
+    "box_c": 37.740002,
+    "volume_ang3": 53753.38,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaClO4_EC-DMC-1-1_1M.xyz",
+    "name": "NaClO4_EC-DMC-1-1_1M",
+    "n_atoms": 3048,
+    "box_a": 37.720001,
+    "box_b": 37.720001,
+    "box_c": 37.720001,
+    "volume_ang3": 53667.96,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaClO4_EC-DME-1-1_1M.xyz",
+    "name": "NaClO4_EC-DME-1-1_1M",
+    "n_atoms": 3156,
+    "box_a": 37.68,
+    "box_b": 37.68,
+    "box_c": 37.68,
+    "volume_ang3": 53497.4,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaClO4_EC-PC-1-1_1M.xyz",
+    "name": "NaClO4_EC-PC-1-1_1M",
+    "n_atoms": 3154,
+    "box_a": 37.700001,
+    "box_b": 37.700001,
+    "box_c": 37.700001,
+    "volume_ang3": 53582.64,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaClO4_PC_1M.xyz",
+    "name": "NaClO4_PC_1M",
+    "n_atoms": 3188,
+    "box_a": 37.700001,
+    "box_b": 37.700001,
+    "box_c": 37.700001,
+    "volume_ang3": 53582.64,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaClO4_water_10M.xyz",
+    "name": "NaClO4_water_10M",
+    "n_atoms": 906,
+    "box_a": 25.35,
+    "box_b": 25.35,
+    "box_c": 25.35,
+    "volume_ang3": 16290.48,
+    "concentration_M": 10.0
+  },
+  {
+    "filename": "NaClO4_water_17M-r2.xyz",
+    "name": "NaClO4_water_17M-r2",
+    "n_atoms": 1344,
+    "box_a": 29.540001,
+    "box_b": 29.540001,
+    "box_c": 29.540001,
+    "volume_ang3": 25776.95,
+    "concentration_M": 17.0
+  },
+  {
+    "filename": "NaClO4_water_17M.xyz",
+    "name": "NaClO4_water_17M",
+    "n_atoms": 1344,
+    "box_a": 29.540001,
+    "box_b": 29.540001,
+    "box_c": 29.540001,
+    "volume_ang3": 25776.95,
+    "concentration_M": 17.0
+  },
+  {
+    "filename": "NaClO4_water_1M.xyz",
+    "name": "NaClO4_water_1M",
+    "n_atoms": 2589,
+    "box_a": 34.259998,
+    "box_b": 34.259998,
+    "box_c": 34.259998,
+    "volume_ang3": 40212.59,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaClO4_water_5M.xyz",
+    "name": "NaClO4_water_5M",
+    "n_atoms": 1572,
+    "box_a": 29.77,
+    "box_b": 29.77,
+    "box_c": 29.77,
+    "volume_ang3": 26383.75,
+    "concentration_M": 5.0
+  },
+  {
+    "filename": "NaFSI-KFSI_DME_1M-0p05M.xyz",
+    "name": "NaFSI-KFSI_DME_1M-0p05M",
+    "n_atoms": 3298,
+    "box_a": 38.259998,
+    "box_b": 38.259998,
+    "box_c": 38.259998,
+    "volume_ang3": 56006.04,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaFSI_DME-BTFE-1-2_2p1M.xyz",
+    "name": "NaFSI_DME-BTFE-1-2_2p1M",
+    "n_atoms": 1483,
+    "box_a": 31.290001,
+    "box_b": 31.290001,
+    "box_c": 31.290001,
+    "volume_ang3": 30634.92,
+    "concentration_M": 2.1
+  },
+  {
+    "filename": "NaFSI_DME-BTFE_r-1-1p2-1.xyz",
+    "name": "NaFSI_DME-BTFE_r-1-1p2-1",
+    "n_atoms": 884,
+    "box_a": 26.17,
+    "box_b": 26.17,
+    "box_c": 26.17,
+    "volume_ang3": 17923.02,
+    "concentration_M": null
+  },
+  {
+    "filename": "NaFSI_DME-BTFE_r-1-1p2-2.xyz",
+    "name": "NaFSI_DME-BTFE_r-1-1p2-2",
+    "n_atoms": 1184,
+    "box_a": 29.02,
+    "box_b": 29.02,
+    "box_c": 29.02,
+    "volume_ang3": 24439.5,
+    "concentration_M": null
+  },
+  {
+    "filename": "NaFSI_DME-BTFE_r-1-1p2-3.xyz",
+    "name": "NaFSI_DME-BTFE_r-1-1p2-3",
+    "n_atoms": 1484,
+    "box_a": 31.4,
+    "box_b": 31.4,
+    "box_c": 31.4,
+    "volume_ang3": 30959.14,
+    "concentration_M": null
+  },
+  {
+    "filename": "NaFSI_DME-TTE_r-1-2p25-3.xyz",
+    "name": "NaFSI_DME-TTE_r-1-2p25-3",
+    "n_atoms": 2000,
+    "box_a": 33.97,
+    "box_b": 33.97,
+    "box_c": 33.97,
+    "volume_ang3": 39200.05,
+    "concentration_M": null
+  },
+  {
+    "filename": "NaFSI_DME_0p5M.xyz",
+    "name": "NaFSI_DME_0p5M",
+    "n_atoms": 4774,
+    "box_a": 43.02,
+    "box_b": 43.02,
+    "box_c": 43.02,
+    "volume_ang3": 79617.99,
+    "concentration_M": 0.5
+  },
+  {
+    "filename": "NaFSI_DME_1M-r2.xyz",
+    "name": "NaFSI_DME_1M-r2",
+    "n_atoms": 3288,
+    "box_a": 38.200001,
+    "box_b": 38.200001,
+    "box_c": 38.200001,
+    "volume_ang3": 55742.97,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaFSI_DME_1M.xyz",
+    "name": "NaFSI_DME_1M",
+    "n_atoms": 3288,
+    "box_a": 38.200001,
+    "box_b": 38.200001,
+    "box_c": 38.200001,
+    "volume_ang3": 55742.97,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaFSI_DME_2M.xyz",
+    "name": "NaFSI_DME_2M",
+    "n_atoms": 2604,
+    "box_a": 35.689999,
+    "box_b": 35.689999,
+    "box_c": 35.689999,
+    "volume_ang3": 45461.06,
+    "concentration_M": 2.0
+  },
+  {
+    "filename": "NaFSI_DME_3M.xyz",
+    "name": "NaFSI_DME_3M",
+    "n_atoms": 1836,
+    "box_a": 32.029999,
+    "box_b": 32.029999,
+    "box_c": 32.029999,
+    "volume_ang3": 32860.24,
+    "concentration_M": 3.0
+  },
+  {
+    "filename": "NaFSI_DME_3p8M.xyz",
+    "name": "NaFSI_DME_3p8M",
+    "n_atoms": 1916,
+    "box_a": 32.689999,
+    "box_b": 32.689999,
+    "box_c": 32.689999,
+    "volume_ang3": 34933.71,
+    "concentration_M": 3.8
+  },
+  {
+    "filename": "NaFSI_DME_4M-r2.xyz",
+    "name": "NaFSI_DME_4M-r2",
+    "n_atoms": 1936,
+    "box_a": 32.84,
+    "box_b": 32.84,
+    "box_c": 32.84,
+    "volume_ang3": 35416.81,
+    "concentration_M": 4.0
+  },
+  {
+    "filename": "NaFSI_DME_4M.xyz",
+    "name": "NaFSI_DME_4M",
+    "n_atoms": 1936,
+    "box_a": 32.84,
+    "box_b": 32.84,
+    "box_c": 32.84,
+    "volume_ang3": 35416.81,
+    "concentration_M": 4.0
+  },
+  {
+    "filename": "NaFSI_DME_5M-r2.xyz",
+    "name": "NaFSI_DME_5M-r2",
+    "n_atoms": 1824,
+    "box_a": 32.27,
+    "box_b": 32.27,
+    "box_c": 32.27,
+    "volume_ang3": 33604.46,
+    "concentration_M": 5.0
+  },
+  {
+    "filename": "NaFSI_DME_5M.xyz",
+    "name": "NaFSI_DME_5M",
+    "n_atoms": 1824,
+    "box_a": 32.27,
+    "box_b": 32.27,
+    "box_c": 32.27,
+    "volume_ang3": 33604.46,
+    "concentration_M": 5.0
+  },
+  {
+    "filename": "NaFSI_DME_r-1-1p2.xyz",
+    "name": "NaFSI_DME_r-1-1p2",
+    "n_atoms": 584,
+    "box_a": 22.52,
+    "box_b": 22.52,
+    "box_c": 22.52,
+    "volume_ang3": 11421.03,
+    "concentration_M": null
+  },
+  {
+    "filename": "NaFSI_Pyr13FSI_3p8M.xyz",
+    "name": "NaFSI_Pyr13FSI_3p8M",
+    "n_atoms": 1028,
+    "box_a": 27.200001,
+    "box_b": 27.200001,
+    "box_c": 27.200001,
+    "volume_ang3": 20123.65,
+    "concentration_M": 3.8
+  },
+  {
+    "filename": "NaFSI_Pyr13FSI_r-1-9.xyz",
+    "name": "NaFSI_Pyr13FSI_r-1-9",
+    "n_atoms": 3340,
+    "box_a": 37.73,
+    "box_b": 37.73,
+    "box_c": 37.73,
+    "volume_ang3": 53710.65,
+    "concentration_M": null
+  },
+  {
+    "filename": "NaFSI_TMP_3p3M.xyz",
+    "name": "NaFSI_TMP_3p3M",
+    "n_atoms": 1775,
+    "box_a": 32.259998,
+    "box_b": 32.259998,
+    "box_c": 32.259998,
+    "volume_ang3": 33573.22,
+    "concentration_M": 3.3
+  },
+  {
+    "filename": "NaFSI_diglyme-BTFE-1-2_1p2M.xyz",
+    "name": "NaFSI_diglyme-BTFE-1-2_1p2M",
+    "n_atoms": 2890,
+    "box_a": 38.41,
+    "box_b": 38.41,
+    "box_c": 38.41,
+    "volume_ang3": 56667.35,
+    "concentration_M": 1.2
+  },
+  {
+    "filename": "NaFSI_diglyme_1M.xyz",
+    "name": "NaFSI_diglyme_1M",
+    "n_atoms": 3443,
+    "box_a": 38.209999,
+    "box_b": 38.209999,
+    "box_c": 38.209999,
+    "volume_ang3": 55786.75,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaFSI_water_21M.xyz",
+    "name": "NaFSI_water_21M",
+    "n_atoms": 1506,
+    "box_a": 31.629999,
+    "box_b": 31.629999,
+    "box_c": 31.629999,
+    "volume_ang3": 31644.45,
+    "concentration_M": 21.0
+  },
+  {
+    "filename": "NaOTf_DME_1M-r2.xyz",
+    "name": "NaOTf_DME_1M-r2",
+    "n_atoms": 3268,
+    "box_a": 38.02,
+    "box_b": 38.02,
+    "box_c": 38.02,
+    "volume_ang3": 54958.69,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaOTf_DME_1M.xyz",
+    "name": "NaOTf_DME_1M",
+    "n_atoms": 3268,
+    "box_a": 38.02,
+    "box_b": 38.02,
+    "box_c": 38.02,
+    "volume_ang3": 54958.69,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaOTf_diglyme_1M.xyz",
+    "name": "NaOTf_diglyme_1M",
+    "n_atoms": 3423,
+    "box_a": 38.029999,
+    "box_b": 38.029999,
+    "box_c": 38.029999,
+    "volume_ang3": 55002.06,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaOTf_tetraglyme_1M.xyz",
+    "name": "NaOTf_tetraglyme_1M",
+    "n_atoms": 3547,
+    "box_a": 38.02,
+    "box_b": 38.02,
+    "box_c": 38.02,
+    "volume_ang3": 54958.69,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaOTf_water_9p26M.xyz",
+    "name": "NaOTf_water_9p26M",
+    "n_atoms": 1242,
+    "box_a": 28.25,
+    "box_b": 28.25,
+    "box_c": 28.25,
+    "volume_ang3": 22545.27,
+    "concentration_M": 9.26
+  },
+  {
+    "filename": "NaPF6-NaDFOB_EC-DEC-3-7_1M-0p1M.xyz",
+    "name": "NaPF6-NaDFOB_EC-DEC-3-7_1M-0p1M",
+    "n_atoms": 3168,
+    "box_a": 38.099998,
+    "box_b": 38.099998,
+    "box_c": 38.099998,
+    "volume_ang3": 55306.33,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6-NaFSI_DME_0p8M-0p2M.xyz",
+    "name": "NaPF6-NaFSI_DME_0p8M-0p2M",
+    "n_atoms": 3256,
+    "box_a": 38.040001,
+    "box_b": 38.040001,
+    "box_c": 38.040001,
+    "volume_ang3": 55045.47,
+    "concentration_M": 0.8
+  },
+  {
+    "filename": "NaPF6_DME-TMP-7-3_1M.xyz",
+    "name": "NaPF6_DME-TMP-7-3_1M",
+    "n_atoms": 3187,
+    "box_a": 37.959999,
+    "box_b": 37.959999,
+    "box_c": 37.959999,
+    "volume_ang3": 54698.9,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_DME_1M-r2.xyz",
+    "name": "NaPF6_DME_1M-r2",
+    "n_atoms": 3248,
+    "box_a": 37.990002,
+    "box_b": 37.990002,
+    "box_c": 37.990002,
+    "volume_ang3": 54828.7,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_DME_1M.xyz",
+    "name": "NaPF6_DME_1M",
+    "n_atoms": 3248,
+    "box_a": 37.990002,
+    "box_b": 37.990002,
+    "box_c": 37.990002,
+    "volume_ang3": 54828.7,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_DME_1M_FEC5wt.xyz",
+    "name": "NaPF6_DME_1M_FEC5wt",
+    "n_atoms": 3348,
+    "box_a": 38.419998,
+    "box_b": 38.419998,
+    "box_c": 38.419998,
+    "volume_ang3": 56711.62,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EA_1M_FEC5wt.xyz",
+    "name": "NaPF6_EA_1M_FEC5wt",
+    "n_atoms": 3458,
+    "box_a": 39.669998,
+    "box_b": 39.669998,
+    "box_c": 39.669998,
+    "volume_ang3": 62429.02,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EC-DEC-1-1_1M.xyz",
+    "name": "NaPF6_EC-DEC-1-1_1M",
+    "n_atoms": 3154,
+    "box_a": 38.0,
+    "box_b": 38.0,
+    "box_c": 38.0,
+    "volume_ang3": 54872.0,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EC-DEC-1-9_1M.xyz",
+    "name": "NaPF6_EC-DEC-1-9_1M",
+    "n_atoms": 3142,
+    "box_a": 38.0,
+    "box_b": 38.0,
+    "box_c": 38.0,
+    "volume_ang3": 54872.0,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EC-DEC-3-7_1M.xyz",
+    "name": "NaPF6_EC-DEC-3-7_1M",
+    "n_atoms": 3148,
+    "box_a": 38.0,
+    "box_b": 38.0,
+    "box_c": 38.0,
+    "volume_ang3": 54872.0,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EC-DEC-3-7_1M_FEC2wt.xyz",
+    "name": "NaPF6_EC-DEC-3-7_1M_FEC2wt",
+    "n_atoms": 3198,
+    "box_a": 38.220001,
+    "box_b": 38.220001,
+    "box_c": 38.220001,
+    "volume_ang3": 55830.57,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EC-DEC-7-3_1M.xyz",
+    "name": "NaPF6_EC-DEC-7-3_1M",
+    "n_atoms": 3160,
+    "box_a": 38.009998,
+    "box_b": 38.009998,
+    "box_c": 38.009998,
+    "volume_ang3": 54915.32,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EC-DEC-9-1_1M.xyz",
+    "name": "NaPF6_EC-DEC-9-1_1M",
+    "n_atoms": 3166,
+    "box_a": 38.009998,
+    "box_b": 38.009998,
+    "box_c": 38.009998,
+    "volume_ang3": 54915.32,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EC-DMC-1-1_1M.xyz",
+    "name": "NaPF6_EC-DMC-1-1_1M",
+    "n_atoms": 3088,
+    "box_a": 37.990002,
+    "box_b": 37.990002,
+    "box_c": 37.990002,
+    "volume_ang3": 54828.7,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EC-PC-1-1_1M.xyz",
+    "name": "NaPF6_EC-PC-1-1_1M",
+    "n_atoms": 3194,
+    "box_a": 37.970001,
+    "box_b": 37.970001,
+    "box_c": 37.970001,
+    "volume_ang3": 54742.15,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EGDEE-CPME-1-1_1M.xyz",
+    "name": "NaPF6_EGDEE-CPME-1-1_1M",
+    "n_atoms": 3356,
+    "box_a": 37.959999,
+    "box_b": 37.959999,
+    "box_c": 37.959999,
+    "volume_ang3": 54698.9,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_EMC-FEC-1-1_0p6M.xyz",
+    "name": "NaPF6_EMC-FEC-1-1_0p6M",
+    "n_atoms": 4379,
+    "box_a": 43.02,
+    "box_b": 43.02,
+    "box_c": 43.02,
+    "volume_ang3": 79617.99,
+    "concentration_M": 0.6
+  },
+  {
+    "filename": "NaPF6_MP_1M_FEC5wt.xyz",
+    "name": "NaPF6_MP_1M_FEC5wt",
+    "n_atoms": 3182,
+    "box_a": 38.450001,
+    "box_b": 38.450001,
+    "box_c": 38.450001,
+    "volume_ang3": 56844.58,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_PC_1M.xyz",
+    "name": "NaPF6_PC_1M",
+    "n_atoms": 3228,
+    "box_a": 37.970001,
+    "box_b": 37.970001,
+    "box_c": 37.970001,
+    "volume_ang3": 54742.15,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_PC_1M_EMImFSI10molpct.xyz",
+    "name": "NaPF6_PC_1M_EMImFSI10molpct",
+    "n_atoms": 3956,
+    "box_a": 40.060001,
+    "box_b": 40.060001,
+    "box_c": 40.060001,
+    "volume_ang3": 64288.44,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_diglyme-TMP-1-1_1M.xyz",
+    "name": "NaPF6_diglyme-TMP-1-1_1M",
+    "n_atoms": 3038,
+    "box_a": 37.23,
+    "box_b": 37.23,
+    "box_c": 37.23,
+    "volume_ang3": 51603.49,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_diglyme_0p4M-r2.xyz",
+    "name": "NaPF6_diglyme_0p4M-r2",
+    "n_atoms": 4949,
+    "box_a": 42.790001,
+    "box_b": 42.790001,
+    "box_c": 42.790001,
+    "volume_ang3": 78347.81,
+    "concentration_M": 0.4
+  },
+  {
+    "filename": "NaPF6_diglyme_0p4M.xyz",
+    "name": "NaPF6_diglyme_0p4M",
+    "n_atoms": 4949,
+    "box_a": 42.790001,
+    "box_b": 42.790001,
+    "box_c": 42.790001,
+    "volume_ang3": 78347.81,
+    "concentration_M": 0.4
+  },
+  {
+    "filename": "NaPF6_diglyme_0p6M.xyz",
+    "name": "NaPF6_diglyme_0p6M",
+    "n_atoms": 5542,
+    "box_a": 44.529999,
+    "box_b": 44.529999,
+    "box_c": 44.529999,
+    "volume_ang3": 88299.46,
+    "concentration_M": 0.6
+  },
+  {
+    "filename": "NaPF6_diglyme_0p8M.xyz",
+    "name": "NaPF6_diglyme_0p8M",
+    "n_atoms": 4208,
+    "box_a": 40.709999,
+    "box_b": 40.709999,
+    "box_c": 40.709999,
+    "volume_ang3": 67468.85,
+    "concentration_M": 0.8
+  },
+  {
+    "filename": "NaPF6_diglyme_1M-r2.xyz",
+    "name": "NaPF6_diglyme_1M-r2",
+    "n_atoms": 3403,
+    "box_a": 38.009998,
+    "box_b": 38.009998,
+    "box_c": 38.009998,
+    "volume_ang3": 54915.32,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_diglyme_1M-r3.xyz",
+    "name": "NaPF6_diglyme_1M-r3",
+    "n_atoms": 3403,
+    "box_a": 38.009998,
+    "box_b": 38.009998,
+    "box_c": 38.009998,
+    "volume_ang3": 54915.32,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_diglyme_1M.xyz",
+    "name": "NaPF6_diglyme_1M",
+    "n_atoms": 3403,
+    "box_a": 38.009998,
+    "box_b": 38.009998,
+    "box_c": 38.009998,
+    "volume_ang3": 54915.32,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_diglyme_2p5M-r2.xyz",
+    "name": "NaPF6_diglyme_2p5M-r2",
+    "n_atoms": 1810,
+    "box_a": 31.23,
+    "box_b": 31.23,
+    "box_c": 31.23,
+    "volume_ang3": 30459.02,
+    "concentration_M": 2.5
+  },
+  {
+    "filename": "NaPF6_diglyme_2p5M.xyz",
+    "name": "NaPF6_diglyme_2p5M",
+    "n_atoms": 1810,
+    "box_a": 31.23,
+    "box_b": 31.23,
+    "box_c": 31.23,
+    "volume_ang3": 30459.02,
+    "concentration_M": 2.5
+  },
+  {
+    "filename": "NaPF6_tetraglyme_1M-r2.xyz",
+    "name": "NaPF6_tetraglyme_1M-r2",
+    "n_atoms": 3527,
+    "box_a": 38.0,
+    "box_b": 38.0,
+    "box_c": 38.0,
+    "volume_ang3": 54872.0,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_tetraglyme_1M.xyz",
+    "name": "NaPF6_tetraglyme_1M",
+    "n_atoms": 3527,
+    "box_a": 38.0,
+    "box_b": 38.0,
+    "box_c": 38.0,
+    "volume_ang3": 54872.0,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaPF6_triglyme_1M.xyz",
+    "name": "NaPF6_triglyme_1M",
+    "n_atoms": 3490,
+    "box_a": 38.009998,
+    "box_b": 38.009998,
+    "box_c": 38.009998,
+    "volume_ang3": 54915.32,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaTFSI_DME_1M.xyz",
+    "name": "NaTFSI_DME_1M",
+    "n_atoms": 3408,
+    "box_a": 38.77,
+    "box_b": 38.77,
+    "box_c": 38.77,
+    "volume_ang3": 58275.69,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaTFSI_EC-DMC-1-1_1M.xyz",
+    "name": "NaTFSI_EC-DMC-1-1_1M",
+    "n_atoms": 3248,
+    "box_a": 38.759998,
+    "box_b": 38.759998,
+    "box_c": 38.759998,
+    "volume_ang3": 58230.6,
+    "concentration_M": 1.0
+  },
+  {
+    "filename": "NaTFSI_PC_1M.xyz",
+    "name": "NaTFSI_PC_1M",
+    "n_atoms": 3388,
+    "box_a": 38.740002,
+    "box_b": 38.740002,
+    "box_c": 38.740002,
+    "volume_ang3": 58140.52,
+    "concentration_M": 1.0
+  }
+]

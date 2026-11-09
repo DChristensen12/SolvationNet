@@ -1,6 +1,6 @@
 # SolvationNet
 
-This Repository is being used for machine learning simulations to study the molecular structure and dynamics of sodium ion battery electrolytes and research into lanthanide and actinide chemistry. It is part of my ongoing research at the Lawrence Berkeley National Lab under Nitesh Kumar and Samuel Blau.
+This Repository is being used for machine learning simulations to study the molecular structure and dynamics of sodium ion battery electrolytes, molten-salt battery electrolytes and research into lanthanide and actinide chemistry. It is part of my ongoing research at the Lawrence Berkeley National Lab in the materials and chemical sciences division under Nitesh Kumar and Samuel Blau.
 
 This contains scripts and notebooks used during the research, the datasets produced by them, and other research outputs such as the poster below that was presented at the UC Berkeley College of Chemistry's 18th Annual Saegebarth Undergraduate Research Fair.
 
@@ -147,7 +147,7 @@ python equilibrate.py --status
 
 | Flag | Values | Default | Description |
 |------|--------|---------|-------------|
-| `--model` | `uma`, `orbmol_v2` | `uma` | ML potential |
+| `--model` | `uma`, `uma_nitro`, `orbmol_v2` | `uma` | ML potential |
 | `--workflow` | `npt`, `nvt`, `nvt+npt` | `npt` | Equilibration protocol |
 | `--nvt-steps` | integer | 50000 | NVT steps (50 ps at 1 fs) |
 | `--npt-steps` | integer | 100000 | NPT steps (100 ps at 1 fs) |
@@ -206,6 +206,7 @@ The toolkit supports three ML potential families via `utils.get_calculator()`:
 | Model | Install | Description |
 |-------|---------|-------------|
 | `uma` | `pip install fairchem-core` | UMA-s-1.2 (FAIRChem/Meta), trained on OMol25. HuggingFace login required. |
+| `uma_nitro` | `pip install fairchem-core` | UMA-S-1.2.1-FT-D4rev (Nitro), fine-tuned on OMol-D4rev. ~10x faster than UMA. |
 | `orbmol_v2` | `pip install orb-models` | OrbMol-v2 (Orbital Materials), trained on OMol25. Includes learnable electrostatics. |
 | `mace_*` | `pip install mace-torch` | MACE-MP-0 (Materials Project). General-purpose, full periodic table. |
 

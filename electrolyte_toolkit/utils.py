@@ -1,6 +1,31 @@
 """Shared helpers for the electrolyte MD toolkit. Everything else imports from here."""
 
 import os
+from pathlib import Path
+
+
+def load_env(filename: str = ".env") -> None:
+    """Reads KEY=VALUE pairs from a .env file into os.environ."""
+    # cwd, this file's folder, then the repo root
+    seen = set()
+    for d in (Path.cwd(), Path(__file__).resolve().parent, Path(__file__).resolve().parent.parent):
+        f = d / filename
+        if f in seen or not f.is_file():
+            continue
+        seen.add(f)
+        for line in f.read_text().splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, val = line.partition("=")
+            key = key.removeprefix("export ").strip()
+            val = val.strip().strip("'\"")
+            # setdefault, so anything already exported wins and nothing is printed
+            if key and val:
+                os.environ.setdefault(key, val)
+
+
+load_env()
 
 AVOGADRO = 6.02214076e23
 AMU_TO_GRAMS = 1.66053906660e-24
@@ -122,6 +147,7 @@ def get_calculator(model: str = DEFAULT_MODEL, device: str | None = None):
     Supported models:
         'orbmol_v2'     OrbMol-v2 (Orbital Materials), trained on OMol25
         'uma'           UMA-s-1.2 (FAIRChem/Meta), trained on OMol25
+        'uma_nitro'     UMA-S-1.2.1-FT-D4rev (Nitro), fine-tuned on OMol-D4rev
         'mace_small'    MACE-MP-0 small (Materials Project)
         Any orb-models name (e.g. 'orb_v3_conservative_inf_omat')
     """
@@ -140,7 +166,11 @@ def get_calculator(model: str = DEFAULT_MODEL, device: str | None = None):
                 "  pip install fairchem-core\n"
                 "  UMA checkpoints are gated, run: from huggingface_hub import login; login()"
             )
-        uma_name = "uma-s-1p2" if model == "uma" else model.replace("_", "-")
+        UMA_NAMES = {
+            "uma": "uma-s-1p2",
+            "uma_nitro": "uma-s-1p2p1-ft-d4rev",
+        }
+        uma_name = UMA_NAMES.get(model, model.replace("_", "-"))
         predictor = pretrained_mlip.get_predict_unit(uma_name, device=device)
         if hasattr(predictor, 'model'):
             predictor.model.use_checkpoint = False

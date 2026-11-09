@@ -23,7 +23,6 @@ SHELL_CUTOFF_A = 3.2
 SHARED_GPU = {"La3+_F", "La3+_PO4"}
 
 TARGET_NS = 10.0
-TIMESTEP_FS = 1.0
 
 
 def parse_md_log(path):
@@ -62,12 +61,10 @@ def parse_rate(path):
 
 
 def infer_shared_rates(runs):
-    """Fills in rates for runs that stopped before the first progress line.
-
-    The driver logs every 10,000 steps, so the two systems sharing GPU 0 never
-    printed a rate. Every system ran in the same wall window, so we scale by the
-    MD seconds the dedicated runs took.
-    """
+    """Fills in rates for the runs that stopped before the first progress line."""
+    # The driver logs every 10,000 steps, so the two systems sharing GPU 0 never
+    # printed a rate. Every system ran in the same wall window, so scale by the
+    # MD seconds the dedicated runs took
     dedicated = [r for r in runs if not np.isnan(r["rate"])]
     window_s = np.mean([r["steps"][-1] / r["rate"] for r in dedicated])
     for r in runs:

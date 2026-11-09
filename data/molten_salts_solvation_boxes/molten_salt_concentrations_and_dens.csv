@@ -1,0 +1,6 @@
+filename,system,composition_mol_pct,application,temperature_K,n_ions,box_a,box_b,box_c,volume_ang3,sim_density_g_cm3,ref_density_g_cm3,ref_density_source
+LiCl-KCl_npt_750K_1atm_MACE-small-0b2.xyz,LiCl-KCl,"LiCl 59%, KCl 41%",synthesis flux,750,200,19.404303,19.054157,17.578127,6499.207,1.433,1.516,Janz_NIST_ideal_mixing
+LiCl-LiI_npt_683K_1atm_MACE-small-0b2.xyz,LiCl-LiI,"LiCl 36%, LiI 64%",LMB,683,200,19.887571,23.010987,22.866763,10464.5771,2.279,2.676,Janz_NIST_ideal_mixing
+LiCl-NaCl-CaCl2_npt_873K_1atm_MACE-small-0b2.xyz,LiCl-NaCl-CaCl2,"LiCl 38%, NaCl 27%, CaCl2 35%",LMB,873,200,18.70095,21.728639,21.20971,8618.485,1.546,1.791,Janz_NIST_ideal_mixing
+LiF-LiCl-LiBr_npt_773K_1atm_MACE-small-0b2.xyz,LiF-LiCl-LiBr,"LiF 22%, LiCl 31%, LiBr 47%",LMB,773,200,17.255115,16.98343,16.51052,4838.4251,1.902,2.127,Janz_NIST_ideal_mixing
+MgCl2-NaCl-KCl_npt_973K_1atm_MACE-small-0b2.xyz,MgCl2-NaCl-KCl,"MgCl2 50%, NaCl 30%, KCl 20%",LMB,973,200,20.212493,19.192839,18.587644,7210.7999,1.441,1.621,Janz_NIST_ideal_mixing
