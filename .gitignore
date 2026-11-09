@@ -44,5 +44,7 @@ Thumbs.db
 # my personal script for making hugging face datasets from the data from github.
 hf_upload.py
 
-# Presentation on my current progress. May or may not upload to public.
-SolvationNet_Progress.pptx
+# Secrets
+.env
+.env.*
+!.env.example
