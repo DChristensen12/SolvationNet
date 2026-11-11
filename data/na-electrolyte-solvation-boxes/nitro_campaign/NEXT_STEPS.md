@@ -1,6 +1,6 @@
-# Nitro NPT campaign: handoff (written 2026-11-10 04:20 UTC)
+# Nitro NPT campaign: handoff (updated 2026-11-11 06:15 UTC)
 
-## Status: PAUSED. 13 of 21 boxes finished, 8 remaining. No sandbox is running.
+## Status: PAUSED. 16 of 21 boxes finished, 5 remaining. No sandbox is running.
 
 Protocol: UMA Nitro (uma_nitro = UMA-S-1.2.1-FT-D4rev, checkpoint uma-s-1p2p1-ft-d4rev), NPT only,
 50 ps (--npt-steps 50000), 300 K, 1 atm, from the NVT_OrbMolV2 boxes. Density = mean of the last 20% of the run.
@@ -8,15 +8,14 @@ Drift = change in mean density between the last two 20% windows; <1% counts as c
 
 ### Finished (g/cm3)
 See nitro_npt_50ps_summary.csv (same folder). Final structures: <name>/<name>.xyz.
-Organic-solvent boxes all finish BELOW experiment (-0.9% to -8.6%) and most are not converged (drift >1%),
+Organic-solvent boxes all finish BELOW experiment (-0.9% to -8.6%; error shrinks with glyme chain length) and most are not converged (drift >1%),
 so 50 ps may be too short. Aqueous NaClO4 boxes converge (drift <0.4%), error -2.9% to +7.7%.
 NaClO4_water_1M: final frame (1.279) is far from the tail mean (1.163), noisy; candidate for extension.
 Extension to 100 ps was deliberately NOT done: the user wants to review unconverged boxes first.
 
-### Remaining (alphabetical, driver order)
-NaPF6_PC_1M, NaPF6_diglyme_1M, NaPF6_diglyme_1M-r2, NaPF6_diglyme_1M-r3,
-NaPF6_tetraglyme_1M, NaPF6_tetraglyme_1M-r2, NaTFSI_DME_1M, NaTFSI_EC-DMC-1-1_1M
-(NaPF6_PC_1M was started and killed at about step 5000; it restarts from 0.)
+### Remaining (driver order, files sorted by name so -r2/-r3 come before the unsuffixed box)
+NaPF6_diglyme_1M, NaPF6_tetraglyme_1M-r2, NaPF6_tetraglyme_1M, NaTFSI_DME_1M, NaTFSI_EC-DMC-1-1_1M
+(NaPF6_diglyme_1M was in progress at about step 25000 when stopped, it was discarded and restarts from 0.)
 
 ## Where things live
 - Remote volume: /mnt/remote/26-11-08-nitro-npt/
@@ -26,7 +25,7 @@ NaPF6_tetraglyme_1M, NaPF6_tetraglyme_1M-r2, NaTFSI_DME_1M, NaTFSI_EC-DMC-1-1_1M
 - Token: HF_TOKEN in SolvationNet/.env (git-ignored; template .env.example). utils.py loads it via load_env().
   Needs access to the gated repo facebook/UMA.
 
-## How to resume (about 10 minutes of setup, then about 7 hours for the 8 boxes)
+## How to resume (about 10 minutes of setup, then about 4-5 hours for the 5 boxes)
 1. Create sandbox: image chemistry-py-3.12-gpu, gpu H100, timeout 86400, NO cwd (a cwd inside /mnt/remote breaks execution).
 2. Ask the user to confirm the token upload (the permission system has blocked .env uploads without explicit confirmation).
    Upload SolvationNet/.env to /mnt/remote/26-11-08-nitro-npt/envtmp.txt. WAIT for it to finish, then in the sandbox:

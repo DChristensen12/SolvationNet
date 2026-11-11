@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Runs every campaign box through NPT with UMA Nitro (UMA-S-1.2.1-FT-D4rev).
+"""Runs every campaign box through NPT with UMA Nitro (UMA-S-1.2.1-FT-D4rev). 
 
 Each box is handed to equilibrate.py as its own process, so a crash costs one
 system and not the campaign. Boxes with a final structure are skipped, and
