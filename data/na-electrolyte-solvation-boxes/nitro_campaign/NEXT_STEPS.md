@@ -1,21 +1,22 @@
-# Nitro NPT campaign: handoff (updated 2026-11-11 06:15 UTC)
+# Nitro NPT campaign: handoff (updated 2026-11-12 05:00 UTC)
 
-## Status: PAUSED. 16 of 21 boxes finished, 5 remaining. No sandbox is running.
+## Status: DONE. All 21 boxes finished (50 ps NPT each); no sandbox running. Updated 2026-11-12 05:00 UTC.
 
-Protocol: UMA Nitro (uma_nitro = UMA-S-1.2.1-FT-D4rev, checkpoint uma-s-1p2p1-ft-d4rev), NPT only,
-50 ps (--npt-steps 50000), 300 K, 1 atm, from the NVT_OrbMolV2 boxes. Density = mean of the last 20% of the run.
-Drift = change in mean density between the last two 20% windows; <1% counts as converged.
+Protocol: UMA Nitro (uma_nitro = UMA-S-1.2.1-FT-D4rev), NPT only, 50 ps (--npt-steps 50000), 300 K, 1 atm,
+from the NVT_OrbMolV2 boxes. Density = mean of the last 20% of the run. Drift = change in mean density
+between the last two 20% windows; <1% counts as converged.
 
-### Finished (g/cm3)
-See nitro_npt_50ps_summary.csv (same folder). Final structures: <name>/<name>.xyz.
-Organic-solvent boxes all finish BELOW experiment (-0.9% to -8.6%; error shrinks with glyme chain length) and most are not converged (drift >1%),
-so 50 ps may be too short. Aqueous NaClO4 boxes converge (drift <0.4%), error -2.9% to +7.7%.
-NaClO4_water_1M: final frame (1.279) is far from the tail mean (1.163), noisy; candidate for extension.
-Extension to 100 ps was deliberately NOT done: the user wants to review unconverged boxes first.
+All 21 final structures: <name>/<name>.xyz in this folder. Results table: nitro_npt_50ps_summary.csv.
+Checkpoints, diagnostics plots and logs stay on the volume: /mnt/remote/26-11-08-nitro-npt/results/<name>/.
 
-### Remaining (driver order, files sorted by name so -r2/-r3 come before the unsuffixed box)
-NaPF6_diglyme_1M, NaPF6_tetraglyme_1M-r2, NaPF6_tetraglyme_1M, NaTFSI_DME_1M, NaTFSI_EC-DMC-1-1_1M
-(NaPF6_diglyme_1M was in progress at about step 25000 when stopped, it was discarded and restarts from 0.)
+### Open items for the user (nothing was extended; user wanted to review first)
+- 13 of 21 boxes have drift >=1% (not converged at 50 ps). Candidates for 100 ps extension, worst first:
+  NaTFSI_DME_1M (-9.6%, drift 2.7%), NaPF6_DME_1M (-4.5%, 2.3%), NaClO4_PC_1M (-3.1%, 2.2%), NaPF6_DME_1M-r2, NaOTf_DME_1M-r2, NaOTf_DME_1M (see the CSV for all, sort by converged_drift_pct).
+- NaClO4_water_1M: +7.7% error and a noisy trajectory (final frame 1.279 vs tail mean 1.163).
+- Organic boxes mostly finish below experiment; the error shrinks with glyme chain length.
+- README.md in data/na-electrolyte-solvation-boxes does not yet list the Nitro subset.
+- To extend a box, resume from its checkpoint with: equilibrate.py --resume <name> --npt-steps 100000 --model uma_nitro
+  (checkpoint dir must contain the box; copy results/<name> to the checkpoint dir first).
 
 ## Where things live
 - Remote volume: /mnt/remote/26-11-08-nitro-npt/

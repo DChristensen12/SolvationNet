@@ -1,0 +1,9 @@
+name,sim_density_tail_mean,sim_density_final,tail_std,exp_density,exp_source,error_pct,converged_drift_pct,n_steps,wall_min
+NaClO4_water_17M-r2,1.7302,1.7203,0.0105,1.664,Jha2024_Fig3a,3.98,0.01,50000,26.6
+NaClO4_water_17M,1.7335,1.7430,0.0102,1.664,Jha2024_Fig3a,4.18,0.03,50000,26.4
+NaClO4_water_1M,1.1633,1.2786,0.0534,1.08,CRC_Handbook_97th,7.71,0.30,50000,68.4
+NaClO4_water_5M,1.3318,1.3320,0.0084,1.371,CRC_Handbook_97th,-2.86,0.07,50000,30.9
+NaOTf_diglyme_1M,0.9941,0.9974,0.0079,1.047,Kumar2026_TableS1,-5.05,0.55,50000,56.6
+NaPF6_PC_1M,1.2625,1.2527,0.0089,1.291,Kumar2026_TableS1,-2.21,0.83,50000,56.5
+NaPF6_diglyme_1M,1.0255,1.0182,0.0100,1.059,Kumar2026_TableS1,-3.16,0.83,50000,57.9
+NaPF6_tetraglyme_1M,1.1006,1.0876,0.0098,1.115,Kumar2026_TableS1,-1.29,0.80,50000,64.7
