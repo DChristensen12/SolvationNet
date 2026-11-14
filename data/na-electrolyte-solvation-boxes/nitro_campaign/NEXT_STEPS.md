@@ -46,3 +46,12 @@ Checkpoints, diagnostics plots and logs stay on the volume: /mnt/remote/26-11-08
 - Review unconverged boxes (drift >1%) and decide which to extend to 100 ps.
 - README.md in data/na-electrolyte-solvation-boxes does not list the Nitro subset yet.
 - NaTFSI boxes are larger and will run slower than the 55 min average.
+
+## Update 2026-11-14: two boxes extended to 100 ps
+NaPF6_DME_1M and NaClO4_PC_1M were resumed from their 50 ps checkpoints for another 50 ps (100 ps total, new random velocities on resume).
+Structures + summary: extended_100ps/ (summary_100ps.csv). Remote: /mnt/remote/26-11-08-nitro-npt/results_100ps/.
+- NaPF6_DME_1M: 0.9623 g/cm3 (exp 0.995, -3.3%), drift 0.01% (100 ps) / 0.45% (ps 50-100). Converged.
+- NaClO4_PC_1M: 1.2504 g/cm3 (exp 1.2616, -0.9%), drift 0.75% (100 ps) / 0.23% (ps 50-100). Converged.
+Their 50 ps entries in nitro_npt_50ps_summary.csv are unchanged (-4.5% and -3.1%). The 11 other unconverged boxes remain at 50 ps.
+The 100 ps boxes have not yet been added to na-electrolyte-solvation-boxes-UMA-S-1p2p1-FT-D4rev/ (pending user decision).
+Extension driver saved at remote scripts/ext_driver.py (hardcodes the two box names; edit the list to extend others).

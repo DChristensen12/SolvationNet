@@ -1,0 +1,3 @@
+name,n_steps,tail_mean_last20pct_of_100ps,tail_std,drift_pct_100ps,tail_mean_ps50_100_last20pct,drift_pct_ps50_100,wall_min
+NaPF6_DME_1M,100000,0.9623,0.0090,0.01,0.9645,0.45,64.7
+NaClO4_PC_1M,100000,1.2504,0.0078,0.75,1.2490,0.23,62.1
