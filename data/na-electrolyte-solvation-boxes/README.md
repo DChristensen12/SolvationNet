@@ -23,7 +23,7 @@ Periodic simulation boxes of sodium-ion battery electrolytes in extended XYZ for
 |--------|-------|----------|-----------|--------|
 | `NVT_OrbMolV2/` | 79 | NVT Langevin (50 ps, 300 K) | OrbMol-v2 (Orbital Materials) | Complete |
 | `NVT_OrbMolV2/npt_extended/` | 4 | NVT (50 ps) then NPT (100 ps, 300 K, 1 atm) | OrbMol-v2 (Orbital Materials) | Complete |
-| `NPT_FAIRChem-UMA/` | 5 of 83 | NPT (300 K, 1 atm) | UMA-s-1.2 (FAIRChem/Meta) | In progress |
+| `NPT_FAIRChem-UMA/` | 5 of 83 | NPT (300 K, 1 atm) | UMA-s-1.2 (FAIRChem/Meta) | Complete |
 | `molecules/` | 32 | n/a | n/a | Input geometries |
 
 ### NVT_OrbMolV2
