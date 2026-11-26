@@ -35,7 +35,9 @@ electrolyte_toolkit/uma_nitro/data/archive_wrong_recipe/
 # UMA nitro Perlmutter runs: the input boxes travel with git pull, the outputs stay on Perlmutter
 !electrolyte_toolkit/uma_nitro/perlmutter/inputs/
 electrolyte_toolkit/uma_nitro/perlmutter/replicas/
-electrolyte_toolkit/uma_nitro/perlmutter/uma_rep_*.out
+electrolyte_toolkit/uma_nitro/perlmutter/relaxed/
+electrolyte_toolkit/uma_nitro/perlmutter/relax_work/
+electrolyte_toolkit/uma_nitro/perlmutter/uma_*.out
 
 # OS
 .DS_Store
