@@ -5,7 +5,7 @@
     python relax_boxes.py --report
 
 Run one copy per GPU (relax_boxes_nitro.sbatch starts four). Each copy claims the next
-unfinished box from inputs/*.xyz, largest first, and minimizes its positions with FIRE at
+unfinished box from inputs_prerelaxed/*.xyz, largest first, and minimizes its positions with FIRE at
 fixed cell until fmax <= 0.05 eV/A, at most 5000 steps counted across chunks. The model
 runs on fairchem's single-GPU "nitro" preset, task omol, with a fresh predictor per box
 because Nitro is set up for one composition at a time.
@@ -31,7 +31,7 @@ import numpy as np
 
 p = argparse.ArgumentParser()
 p.add_argument("--ckpt", help="path to uma-s-1p2p1-ft-d4rev.pt")
-p.add_argument("--inputs", default="inputs", help="folder of raw boxes")
+p.add_argument("--inputs", default="inputs_prerelaxed", help="folder of raw boxes")
 p.add_argument("--fmax", type=float, default=0.05, help="force target, eV/A")
 p.add_argument("--max-steps", type=int, default=5000, help="FIRE step cap per box, counted across chunks")
 p.add_argument("--inference", default="nitro", help="fairchem inference preset")

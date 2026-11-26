@@ -9,10 +9,10 @@
 #SBATCH -t 01:00:00
 #SBATCH -J uma_relax
 #SBATCH -o uma_relax_%j.out
-# Relaxes all 101 raw boxes in inputs/ with UMA uma-s-1p2p1-ft-d4rev (UMA Nitro) before NPT:
+# Relaxes all 101 raw boxes in inputs_prerelaxed/ with UMA uma-s-1p2p1-ft-d4rev (UMA Nitro) before NPT:
 # FIRE at fixed cell to fmax 0.05 eV/A, at most 5000 steps per box. Four boxes at a time,
 # one per A100, on the single-GPU nitro preset. Submit once, from the folder that holds
-# inputs/ and relax_boxes.py, $SCRATCH/SolvationNet/electrolyte_toolkit/uma_nitro/perlmutter:
+# inputs_prerelaxed/ and relax_boxes.py, $SCRATCH/SolvationNet/electrolyte_toolkit/uma_nitro/perlmutter:
 #     sbatch relax_boxes_nitro.sbatch
 # Each 1 hour chunk queues the next one as soon as it starts, relaxes boxes until 5 minutes
 # before its time limit, saves any box in progress and exits; the next chunk carries on. The
@@ -34,11 +34,11 @@ source activate solvationnet || { echo "could not activate the solvationnet env"
 export PYTHONUNBUFFERED=1 OMP_NUM_THREADS=8
 export HF_HUB_OFFLINE=1  # read the model cache without the Hugging Face file lock, which fails on compute nodes
 mkdir -p relaxed/FAILED relax_work
-ls inputs/*.xyz > /dev/null 2>&1 || { echo "no inputs/*.xyz"; exit 1; }
+ls inputs_prerelaxed/*.xyz > /dev/null 2>&1 || { echo "no inputs_prerelaxed/*.xyz"; exit 1; }
 
 left_boxes() {  # boxes neither relaxed nor failed
     local n=0 f s
-    for f in inputs/*.xyz; do
+    for f in inputs_prerelaxed/*.xyz; do
         s=$(basename "$f" .xyz)
         [ -f "relaxed/$s.xyz" ] || [ -f "relaxed/FAILED/$s.txt" ] || n=$(( n + 1 ))
     done
