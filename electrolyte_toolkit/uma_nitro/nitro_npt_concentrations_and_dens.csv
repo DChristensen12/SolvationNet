@@ -1,0 +1,102 @@
+filename,concentration_M,n_salt,volume_ang3,sim_density_g_cm3,exp_density_g_cm3
+NaClO4_EC-PC-1-1_1M,,,,,1.3243
+NaClO4_PC_1M,,,,,1.2616
+NaClO4_water_17M,,,,,1.664
+NaClO4_water_1M,,,,,1.074
+NaClO4_water_4p9891m,,,,,1.3018
+NaOTf_DME_1M,,,,,0.98
+NaOTf_diglyme_1M,,,,,1.047
+NaOTf_tetraglyme_1M,,,,,1.106
+NaPF6_PC_1M,,,,,1.291
+NaPF6_DME_1M,,,,,0.995
+NaPF6_diglyme_1M,,,,,1.059
+NaPF6_tetraglyme_1M,,,,,1.115
+NaTFSI_DME_1M,,,,,1.055
+"NaFSI in DME, DME:NaFSI = 40:1",,,,,0.890
+"NaFSI in DME, DME:NaFSI = 30:1",,,,,0.910
+"NaFSI in DME, DME:NaFSI = 20:1",,,,,0.930
+"NaFSI in DME, DME:NaFSI = 15:1",,,,,0.950
+"NaFSI in DME, DME:NaFSI = 10:1",,,,,0.990
+"NaFSI in DME, DME:NaFSI = 8:1",,,,,1.020
+"NaFSI in DME, DME:NaFSI = 6:1",,,,,1.060
+"NaFSI in DME, DME:NaFSI = 5:1",,,,,1.100
+"NaFSI in DME, DME:NaFSI = 4:1",,,,,1.140
+"NaFSI in DME, DME:NaFSI = 3:1",,,,,1.190
+"NaFSI in diglyme, diglyme:NaFSI = 40:1",,,,,0.960
+"NaFSI in diglyme, diglyme:NaFSI = 30:1",,,,,0.970
+"NaFSI in diglyme, diglyme:NaFSI = 20:1",,,,,0.980
+"NaFSI in diglyme, diglyme:NaFSI = 15:1",,,,,1.000
+"NaFSI in diglyme, diglyme:NaFSI = 10:1",,,,,1.030
+"NaFSI in diglyme, diglyme:NaFSI = 8:1",,,,,1.040
+"NaFSI in diglyme, diglyme:NaFSI = 6:1",,,,,1.080
+"NaFSI in diglyme, diglyme:NaFSI = 5:1",,,,,1.100
+"NaFSI in diglyme, diglyme:NaFSI = 4:1",,,,,1.130
+"NaFSI in diglyme, diglyme:NaFSI = 3:1",,,,,1.180
+"NaOTf in DME, 0.1 M",,,,,0.873
+"NaPF6 in DME, 0.1 M",,,,,0.873
+"NaOTf in diglyme, 0.1 M",,,,,0.950
+"NaPF6 in diglyme, 0.1 M",,,,,0.952
+"NaOTf in tetraglyme, 0.1 M",,,,,1.016
+"NaPF6 in tetraglyme, 0.1 M",,,,,1.014
+"NaOTf in PC, 0.1 M",,,,,1.207
+"NaPF6 in PC, 0.1 M",,,,,1.206
+"NaOTf in PC, 1.0 M",,,,,1.277
+"NaClO4 in PC+DMC, 1 M",,,,,1.2105
+"NaClO4 in PC+DEC, 1 M",,,,,1.1439
+"NaClO4 in PC+EMC, 1 M",,,,,1.1741
+"NaClO4 in PC+DPrC, 1 M",,,,,1.1726
+"NaClO4 in PC+12BC, 1 M",,,,,1.2353
+"NaClO4 in PC+G1 (DME), 1 M",,,,,1.1082
+"NaClO4 in PC+G2 (diglyme), 1 M",,,,,1.1241
+"NaClO4 in PC+G4 (tetraglyme), 1 M",,,,,1.1363
+"NaClO4 in PC+SL (sulfolane), 1 M",,,,,1.2984
+NaCTFSI-NaFSI_water_14p1M-31p5M,,,,,1.910
+NaFSI_Pyr13FSI_r-1-9,,,,,1.3769
+NaClO4_water_10p303m,,,,,1.5071
+NaOTf_water_7p0067m,,,,,1.4266
+"NaPF6 in EC:PC:DEC 5:3:2 wt, 1 M",,,,,1.3062
+"NaPF6 in diglyme, 0.75 M (per L solvent)",,,,,1.03
+"NaPF6 in diglyme, 1.25 M (per L solvent)",,,,,1.08
+"NaPF6 in diglyme, 1.50 M (per L solvent)",,,,,1.11
+"NaPF6 in diglyme, 1.75 M (per L solvent)",,,,,1.13
+"NaPF6 in diglyme, 2.0 M (per L solvent)",,,,,1.16
+"NaPF6 in EC:PC 1:1 wt, 1 M",,,,,1.3498
+"NaPF6 in DME, 0.5 M",,,,,0.935
+NaClO4_water_0p51065m,,,,,1.0361
+NaClO4_water_1p0291m,,,,,1.0734
+NaClO4_water_1p5240m,,,,,1.1071
+NaClO4_water_2p0013m,,,,,1.1380
+NaClO4_water_2p3462m,,,,,1.1594
+NaClO4_water_3p0024m,,,,,1.1981
+NaClO4_water_6p6042m,,,,,1.3736
+NaClO4_water_7p0428m,,,,,1.3915
+NaClO4_water_9p6360m,,,,,1.4861
+NaClO4_water_12p480m,,,,,1.5715
+NaClO4_water_15p243m,,,,,1.6407
+"NaPF6 in diglyme, 1.0 M (per L solvent)",,,,,1.04
+"NaFSI in Pyr13FSI, x(NaFSI) = 0.29994",,,,,1.4585
+"NaFSI in Pyr13FSI, x(NaFSI) = 0.49555",,,,,1.5671
+"Pyr13FSI, neat",,,,,1.3429
+"DME, neat",,,,,0.861
+"diglyme, neat",,,,,0.939
+"tetraglyme, neat",,,,,1.006
+"PC, neat",,,,,1.199
+"DMC, neat",,,,,1.063
+NaOTf_water_0p50101m,,,,,1.0440
+NaOTf_water_0p70193m,,,,,1.0618
+NaOTf_water_1p0065m,,,,,1.0877
+NaOTf_water_1p2544m,,,,,1.1079
+NaOTf_water_1p5079m,,,,,1.1279
+NaOTf_water_2p0101m,,,,,1.1652
+NaOTf_water_2p5125m,,,,,1.2001
+NaOTf_water_3p0071m,,,,,1.2320
+NaOTf_water_3p9910m,,,,,1.2895
+NaOTf_water_5p0120m,,,,,1.3418
+"NaPF6 in EC:PC 1:1 wt + 2 wt% FEC, 1 M",,,,,1.3481
+"NaPF6 in EC:PC:DEC 5:3:2 wt + 2 wt% FEC, 1 M",,,,,1.3098
+"NaTFSI in BMPyr-TFSI (Pyr14TFSI), 0.5 mol/L (IL:NaTFSI = 6.08:1 mol)",,,,,1.436
+"NaTFSI in BMPyr-TFSI (Pyr14TFSI), 1.0 mol/L (IL:NaTFSI = 2.77:1 mol)",,,,,1.474
+"NaTFSI in BMMI-TFSI, 0.5 mol/L (IL:NaTFSI = 6.02:1 mol)",,,,,1.455
+"NaTFSI in BMMI-TFSI, 0.83 mol/L (IL:NaTFSI = 3.45:1 mol)",,,,,1.491
+"Na2SO4 in water, 1.0 m",,,,,1.11266
+"Na2SO4 in water, 0.50 m",,,,,1.05761

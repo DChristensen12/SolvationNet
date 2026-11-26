@@ -29,6 +29,14 @@ anneal/
 analysis/
 vmd/
 
+# Archived UMA nitro boxes built with the wrong recipe
+electrolyte_toolkit/uma_nitro/data/archive_wrong_recipe/
+
+# UMA nitro Perlmutter runs: the input boxes travel with git pull, the outputs stay on Perlmutter
+!electrolyte_toolkit/uma_nitro/perlmutter/inputs/
+electrolyte_toolkit/uma_nitro/perlmutter/replicas/
+electrolyte_toolkit/uma_nitro/perlmutter/uma_rep_*.out
+
 # OS
 .DS_Store
 Thumbs.db
@@ -48,3 +56,4 @@ hf_upload.py
 .env
 .env.*
 !.env.example
+
