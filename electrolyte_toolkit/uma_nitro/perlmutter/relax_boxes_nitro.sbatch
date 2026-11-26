@@ -24,7 +24,7 @@
 
 NWORK=4      # boxes relaxed at once, one per GPU
 MARGIN=300   # seconds before the job's end at which every worker saves and stops
-CKPT=REPLACE_WITH_NITRO_CKPT_PATH
+CKPT=/global/homes/d/dchrist2/.cache/fairchem/models--facebook--UMA/snapshots/1f43bb7ff24084b72e8253f9e16fbac19320adae/checkpoints/uma-s-1p2p1-ft-d4rev.pt
 
 cd "$SLURM_SUBMIT_DIR" || exit 1
 # The solvationnet env from deep-shell/perlmutter/setup_env.sh. `source activate` rather than

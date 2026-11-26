@@ -1,0 +1,18 @@
+=== La³⁺ solvation MD ===
+Job:  60602138
+Node: nid003757
+Date: Sat Oct 31 09:59:27 PM PDT 2026
+Dir:  /pscratch/sd/d/dchrist2/SolvationNet/deep-shell
+
+0, NVIDIA A100-SXM4-40GB, 40960 MiB
+1, NVIDIA A100-SXM4-40GB, 40960 MiB
+2, NVIDIA A100-SXM4-40GB, 40960 MiB
+3, NVIDIA A100-SXM4-40GB, 40960 MiB
+
+Least-advanced systems this pass: F PO4 CO3 NO3
+Launching 4 systems across 4 GPUs
+  GPU 0 → La3+_F
+  GPU 1 → La3+_PO4
+  GPU 2 → La3+_CO3
+  GPU 3 → La3+_NO3
+

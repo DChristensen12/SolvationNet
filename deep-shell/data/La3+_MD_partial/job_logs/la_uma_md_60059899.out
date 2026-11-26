@@ -1,0 +1,35 @@
+=== La³⁺ solvation MD ===
+Job:  60059899
+Node: nid003840
+Date: Tue Oct 20 11:43:24 PM PDT 2026
+Dir:  /pscratch/sd/d/dchrist2/SolvationNet/deep-shell
+
+0, NVIDIA A100-SXM4-40GB, 40960 MiB
+1, NVIDIA A100-SXM4-40GB, 40960 MiB
+2, NVIDIA A100-SXM4-40GB, 40960 MiB
+3, NVIDIA A100-SXM4-40GB, 40960 MiB
+
+Launching 5 systems across 4 GPUs
+  GPU 0 → La3+_F
+  GPU 1 → La3+_OH
+  GPU 2 → La3+_NO3
+  GPU 3 → La3+_CO3
+  GPU 0 → La3+_PO4
+
+  La3+_F: exited non-zero
+  La3+_OH: exited non-zero
+  La3+_NO3: exited non-zero
+  La3+_CO3: exited non-zero
+  La3+_PO4: exited non-zero
+All runs returned (Tue Oct 20 11:44:42 PM PDT 2026), failures: 5
+
+=== Summary ===
+  La3+_F:  FAILED (no output; see results/La3+_F/slurm.log)
+  La3+_OH:  FAILED (no output; see results/La3+_OH/slurm.log)
+  La3+_NO3:  FAILED (no output; see results/La3+_NO3/slurm.log)
+  La3+_CO3:  FAILED (no output; see results/La3+_CO3/slurm.log)
+  La3+_PO4:  FAILED (no output; see results/La3+_PO4/slurm.log)
+
+5 system(s) incomplete — resubmit: sbatch perlmutter/la_uma_md.sbatch
+
+Finished: Tue Oct 20 11:44:42 PM PDT 2026

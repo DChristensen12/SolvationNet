@@ -1,0 +1,25 @@
+System:  La3+_PO4_droplet.xyz
+Atoms:   390   Charge: 0   Spin: 1
+Device:  cuda
+Steps:   10,000,000 (10.0 ns)
+Temp:    300.0 K   Friction: 0.01/fs
+Output:  results/La3+_PO4/
+
+Loading UMA-s-1.2 (OMol25, turbo)...
+Resumed from step 10,000 (0.010 ns)
+Trimmed md.log back to step <= 10,000
+Trimmed trajectory.xyz back to 10 frame(s)
+
+Running: step 10,000 -> 10,000,000
+
+  step=    10,100  t=0.010ns  T=295K  8.2st/s  ETA=339.5h
+  step=    11,000  t=0.011ns  T=295K  10.5st/s  ETA=264.6h
+  step=    20,000  t=0.020ns  T=281K  10.6st/s  ETA=261.3h
+  step=    30,000  t=0.030ns  T=290K  10.5st/s  ETA=262.8h
+  step=    40,000  t=0.040ns  T=303K  10.6st/s  ETA=261.9h
+  step=    50,000  t=0.050ns  T=310K  10.6st/s  ETA=261.9h
+  step=    60,000  t=0.060ns  T=261K  10.5st/s  ETA=262.3h
+  step=    70,000  t=0.070ns  T=296K  10.5st/s  ETA=261.8h
+  step=    80,000  t=0.080ns  T=282K  10.5st/s  ETA=261.4h
+  step=    90,000  t=0.090ns  T=291K  10.6st/s  ETA=260.8h
+  step=   100,000  t=0.100ns  T=297K  10.5st/s  ETA=260.7h
