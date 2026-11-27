@@ -42,6 +42,7 @@ module load python cudatoolkit
 source activate solvationnet || { echo "could not activate the solvationnet env"; exit 1; }
 export PYTHONUNBUFFERED=1 OMP_NUM_THREADS=8
 export HF_HUB_OFFLINE=1  # read the model cache without the Hugging Face file lock, which fails on compute nodes
+export RAY_raylet_start_wait_time_s=300  # Ray startup timed out at the default limit on busy nodes (runs 005, 017, 018)
 OUT=replicas/$SYS
 mkdir -p "$OUT"
 [ -f "relaxed/$SYS.xyz" ] || { echo "no relaxed/$SYS.xyz; run relax_boxes_nitro.sbatch first"; exit 1; }
